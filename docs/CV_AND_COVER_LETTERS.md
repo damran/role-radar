@@ -80,10 +80,20 @@ seconds. RoleRadar is built for both:
   reviewers look for.
 - **Human tone.** Banned AI clichés and varied sentence length, so it doesn't read as machine-written.
 
-> **📄 Output format:** RoleRadar saves the CV/cover letter as **Markdown (`.md`)** files in Drive — clean,
-> single-column, ATS-friendly *content*. Before submitting, open the file in Google Docs or Word and **export to
-> PDF or DOCX** (those are what ATS systems ingest). The Markdown keeps the structure ATS-safe; the export gives
-> you the file format to upload.
+### 📄 From Markdown to a submittable PDF/DOCX (about 2 minutes)
+
+RoleRadar saves each CV/cover letter as a **Markdown (`.md`)** file — clean, single-column, ATS-friendly
+*content*. ATS systems accept **PDF or DOCX**, so convert before submitting:
+
+1. In your Google Sheet, click the **`cv_link`** (or `cover_letter_link`) — the `.md` file opens in Google Drive.
+2. At the top of the preview, click **Open with → Google Docs**. Google renders the Markdown as a formatted document.
+3. In Google Docs: **File → Download → PDF Document (.pdf)** or **Microsoft Word (.docx)**.
+4. Submit the PDF/DOCX. Keep it single-column with standard fonts — don't add tables, columns or graphics
+   (those break ATS parsing).
+
+*(The menu labels above are the English Google UI: **Open with**, **Google Docs**, **File**, **Download**. If your
+Google interface is in another language they're in the same positions — e.g. Turkish: "Birlikte aç → Google
+Dokümanlar", then "Dosya → İndir → PDF Belgesi (.pdf) / Microsoft Word (.docx)".)*
 
 ---
 
@@ -117,8 +127,9 @@ use `auto`, a number, or the template name.
 - **A number or name** — e.g. set `CV_TEMPLATE` to `3` or `Technical / Engineering` to force one style for
   every application.
 
-Each generated CV ends with a short **CV ANALYSIS** (estimated ATS match %, the job keywords it genuinely
-covers, and honest ways to strengthen the application).
+The CV file contains **only the finished CV** — ready to convert and submit. Fit analysis and ways to strengthen
+the application live separately in the **SWOT** document and the `improvement_notes` / `interview_prep` columns,
+so nothing extra has to be trimmed out of the CV before you send it.
 
 ---
 

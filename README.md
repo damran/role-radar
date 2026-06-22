@@ -31,9 +31,10 @@ Applying to jobs well is repetitive: find roles, read each description, judge fi
 cover letter for every single one. RoleRadar automates the boring 80% so you spend your time only on the roles
 worth applying to — with documents already drafted and tailored.
 
-It's wired for **cybersecurity / SOC / detection-engineering** roles out of the box (the sample profile is a
-fictional senior security engineer), but every prompt, keyword and language rule is editable — point it at any
-field.
+**RoleRadar works for any field** — software, design, marketing, law, healthcare, finance, hospitality, the
+trades. The scoring and the documents adapt to *your* profile and the job, so an architect, a lawyer and a chef
+all get a fair score and a tailored CV. The bundled sample happens to be a security engineer; swap in your own
+profile and skillset (one config box) and you're set. See [example profiles](docs/EXAMPLE_PROFILES.md).
 
 ## 🆚 How RoleRadar is different
 
@@ -152,6 +153,7 @@ role-radar/
 - **[Setup guide](docs/SETUP.md)** — beginner-friendly, step by step
 - **[Choosing AI models & costs](docs/LLM_GUIDE.md)** — which model to use, pros/cons, price per job
 - **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** — skillset, matching & 15 ATS CV templates
+- **[Example profiles](docs/EXAMPLE_PROFILES.md)** — ready-to-adapt profiles for any field (lawyer, chef, …)
 - **[Architecture](docs/ARCHITECTURE.md)** — how the pieces fit together
 - **[Rebuild from scratch](docs/REBUILD.md)** — full spec: data model, contracts, LLM JSON shapes
 - **[Google Sheet template](docs/GOOGLE_SHEET_TEMPLATE.md)** — tabs & columns
