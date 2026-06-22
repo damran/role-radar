@@ -164,10 +164,17 @@ Everything you tune lives in the first **config box** of each workflow — no co
 ## ⚖️ Legal & responsible use
 
 RoleRadar reads LinkedIn's **public** job pages, which **may conflict with LinkedIn's Terms of Service** — use it
-for personal, low-volume searching at your own risk and keep the built-in delays. Job posts can contain other
-people's data, and your profile + the job text are sent to your chosen AI provider, so pick one you trust.
-RoleRadar **does not apply to jobs for you** — it drafts documents that *you* review and send. None of this is
-legal advice. See **[SECURITY.md](SECURITY.md)** for handling keys safely.
+for **personal, low-volume** searching at your own risk, keep the built-in delays, and stop if asked (the most
+likely consequence of over-use is your **LinkedIn account being rate-limited or restricted**). Prefer a fully
+ToS-clean setup? Point the Discover step at an **official/licensed jobs API** (e.g. Greenhouse/Lever/Ashby company
+boards, or Adzuna) instead of the LinkedIn source.
+
+Job posts can contain other people's data, and your profile + the job text are sent to your chosen AI provider,
+so pick one you trust — when you run RoleRadar, **you** are the data controller (GDPR/CCPA may apply). RoleRadar
+**does not apply to jobs for you**; it drafts documents that *you* review and send, and you're responsible for
+their accuracy. None of this is legal advice.
+
+📄 Full terms in **[DISCLAIMER.md](DISCLAIMER.md)** · key handling in **[SECURITY.md](SECURITY.md)**.
 
 ## ⚠️ Known limitations
 
