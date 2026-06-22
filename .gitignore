@@ -1,0 +1,23 @@
+# ───────────────────────────────────────────────
+#  Never commit secrets or your real, filled-in copies
+# ───────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# Local, real-data copies of the workflows (kept OUTSIDE this folder by default,
+# but ignored here too as a safety net)
+private/
+*.local.json
+*.private.json
+
+# n8n / local runtime
+.n8n/
+node_modules/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

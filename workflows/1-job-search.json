@@ -1,0 +1,929 @@
+{
+  "name": "RoleRadar · 1 · Discover",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 📡 RoleRadar — Phase 1 · Discover\n\nScans LinkedIn (free guest endpoint) across the searches in your **Filter** tab, dedupes, and writes new jobs to the sheet.\n\n**In:** `Filter` tab (your keywords)  •  **Out:** `Jobs` tab (status = `New`)\n**Setup:** paste `GOOGLE_SHEET_ID` in **Search Configuration**.\n\n— github.com/damran/role-radar",
+        "height": 1004,
+        "width": 3168,
+        "color": 5
+      },
+      "id": "5408ab5e-cb59-4bc5-a6d7-27773a86f9af",
+      "name": "RoleRadar Frame",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -304
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "35a71631-ad4f-4c2f-8ceb-4b221f938205",
+      "name": "P1: Start Job Search",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "GOOGLE_SHEET_ID",
+              "stringValue": "YOUR_GOOGLE_SHEET_ID"
+            },
+            {
+              "name": "DRIVE_ROOT_FOLDER_ID",
+              "stringValue": "YOUR_DRIVE_ROOT_FOLDER_ID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c8436042-9718-4897-a231-a8aa2c1bec3b",
+      "name": "P1: Search Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        112,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "f38c2ae0-50c2-449c-ae4b-5e082b6cfb8a",
+      "name": "P1: LinkedIn Guest Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1712,
+        16
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "id": "778954d1-a6a7-4925-a136-6417cb48c4d5",
+      "name": "P1: Rate Limit Delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        16
+      ],
+      "webhookId": "4186d820-a7a2-4b26-abb2-ab985f37c123"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data || '';\n\n// Page number is forwarded from Code in JavaScript via the URL item\n// The URL node is P1: LinkedIn Guest Search whose input came from If\n// which came from Code in JavaScript — read it from that node's output.\nlet keyword = '';\nlet location = '';\nlet currentPage = 1;\ntry {\n  // Code in JavaScript passes keyword/location info via the URL item\n  // which is accessible as the triggering item in the Code node output\n  const codeOut = $('Code in JavaScript').first().json;\n  keyword = codeOut._keyword || '';\n  location = codeOut._location || '';\n  currentPage = codeOut.currentPage || 1;\n} catch(e) {}\n\n// Extract job IDs\nconst ids = [...html.matchAll(/data-entity-urn=\"urn:li:jobPosting:(\\d+)\"/g)].map(m => m[1]);\n\n// Extract titles\nconst titles = [...html.matchAll(/class=\"base-search-card__title\"[^>]*>\\s*([\\s\\S]*?)\\s*<\\/h3>/g)]\n  .map(m => m[1].replace(/<[^>]+>/g, '').trim());\n\n// Extract companies\nconst companies = [...html.matchAll(/class=\"base-search-card__subtitle\"[^>]*>[\\s\\S]*?<a[^>]*>([^<]+)<\\/a>/g)]\n  .map(m => m[1].trim());\n\n// Extract locations\nconst locations = [...html.matchAll(/class=\"job-search-card__location\"[^>]*>\\s*([\\s\\S]*?)\\s*<\\/span>/g)]\n  .map(m => m[1].replace(/<[^>]+>/g, '').trim());\n\n// Extract dates\nconst dates = [...html.matchAll(/datetime=\"([^\"]+)\"/g)].map(m => m[1]);\n\nconst results = [];\nfor (let i = 0; i < ids.length; i++) {\n  if (!ids[i] || !titles[i]) continue;\n  const title = titles[i] || '';\n  const company = companies[i] || '';\n  const postedDate = dates[i] || new Date().toISOString().split('T')[0];\n  const daysOld = postedDate ? Math.floor((Date.now() - new Date(postedDate).getTime()) / 86400000) : 0;\n\n  results.push({\n    json: {\n      job_id: `li_${ids[i]}`,\n      linkedin_id: ids[i],\n      title: title,\n      company: company,\n      location: locations[i] || location,\n      posted_date: postedDate,\n      listing_age_days: daysOld,\n      job_url: `https://www.linkedin.com/jobs/view/${ids[i]}/`,\n      apply_url: `https://www.linkedin.com/jobs/view/${ids[i]}/`,\n      source: 'LinkedIn',\n      search_keyword: keyword,\n      //dedup_key: `${title.toLowerCase().trim().replace(/\\s+/g, '_')}|${company.toLowerCase().trim().replace(/\\s+/g, '_')}`,\n      dedup_key: `${title.toLowerCase().trim().replace(/\\s+/g, '_')}|${company.toLowerCase().trim().replace(/\\s+/g, '_')}|${ids[i]}`,\n      status: 'New',\n      score: '',\n      cv_link: '',\n      cover_letter_link: '',\n      salary_range: '',\n      remote_type: '',\n      company_summary: '',\n      swot_strengths: '',\n      swot_weaknesses: '',\n      swot_opportunities: '',\n      swot_threats: '',\n      matched_skills: '',\n      missing_skills: '',\n      improvement_notes: '',\n      date_found: new Date().toISOString().split('T')[0],\n      _currentPage: currentPage\n    }\n  });\n}\n\nif (results.length === 0) {\n  return [{ json: {\n    job_id: '', title: '', company: '', dedup_key: '', status: 'empty',\n    date_found: new Date().toISOString().split('T')[0],\n    _currentPage: currentPage\n  }}];\n}\nreturn results;\n"
+      },
+      "id": "2b033fcc-812d-4e88-9945-512271ac4a5f",
+      "name": "P1: Parse LinkedIn HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2112,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData(\"node\");\nconst items = $input.all();\n\n// 1. Initialize persistent runtime memory\nstaticData.seenIds = staticData.seenIds || [];\nconst runtimeSeen = new Set(staticData.seenIds);\n\n// 2. Get data already in the Spreadsheet (Snapshot)\nconst spreadsheetSeen = new Set();\ntry {\n  const existingRows = $(\"P1: Read Existing Job IDs\").all();\n  existingRows.forEach(row => {\n    const d = row.json;\n    if (d.job_id) spreadsheetSeen.add(String(d.job_id));\n    if (d.job_url) spreadsheetSeen.add(String(d.job_url).toLowerCase().trim());\n    if (d.dedup_key) spreadsheetSeen.add(String(d.dedup_key));\n  });\n} catch (e) {\n  // If spreadsheet node hasn't run or is empty, we just skip\n}\n\n// 3. Filter current batch\nconst filtered = items.filter(item => {\n  const job = item.json;\n  if (!job.job_id || job.status === \"empty\") return false;\n\n  const id = String(job.job_id);\n  const url = String(job.job_url || \"\").toLowerCase().trim();\n  const key = String(job.dedup_key || \"\");\n\n  // Check: Is it in the spreadsheet OR seen earlier in this specific run?\n  const isDup = spreadsheetSeen.has(id) || spreadsheetSeen.has(url) || spreadsheetSeen.has(key) ||\n                runtimeSeen.has(id) || runtimeSeen.has(url) || runtimeSeen.has(key);\n\n  if (isDup) return false;\n\n  // Mark as seen for the NEXT keyword in this run\n  runtimeSeen.add(id);\n  if (url) runtimeSeen.add(url);\n  if (key) runtimeSeen.add(key);\n  \n  return true;\n});\n\n// 4. Save runtime memory back (only IDs/Keys to keep it light)\nstaticData.seenIds = Array.from(runtimeSeen);\n\n// 5. Handle empty results safely\nif (filtered.length === 0) {\n  return [{ json: { status: \"no_new_jobs\", _currentPage: items[0]?.json?._currentPage || 1 } }];\n}\n\nreturn filtered;"
+      },
+      "id": "62384d92-524f-42fc-a351-a94e5491b884",
+      "name": "P1: Filter New Jobs Only",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        16
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P1: Search Configuration').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.job_id }}",
+            "title": "={{ $json.title }}",
+            "company": "={{ $json.company }}",
+            "location": "={{ $json.location }}",
+            "posted_date": "={{ $json.posted_date }}",
+            "listing_age_days": "={{ $json.listing_age_days }}",
+            "job_url": "={{ $json.job_url }}",
+            "apply_url": "={{ $json.apply_url }}",
+            "source": "={{ $json.source }}",
+            "search_keyword": "={{ $json.search_keyword }}",
+            "dedup_key": "={{ $json.dedup_key }}",
+            "status": "New",
+            "date_found": "={{ $json.date_found }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "remote_type",
+              "displayName": "remote_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "posted_date",
+              "displayName": "posted_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "listing_age_days",
+              "displayName": "listing_age_days",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "job_url",
+              "displayName": "job_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "apply_url",
+              "displayName": "apply_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "search_keyword",
+              "displayName": "search_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "dedup_key",
+              "displayName": "dedup_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommendation",
+              "displayName": "recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "callback_likelihood",
+              "displayName": "callback_likelihood",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "salary_range",
+              "displayName": "salary_range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_sector",
+              "displayName": "company_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_summary",
+              "displayName": "company_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "matched_skills",
+              "displayName": "matched_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "missing_skills",
+              "displayName": "missing_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "green_flags",
+              "displayName": "green_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "red_flags",
+              "displayName": "red_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_strengths",
+              "displayName": "swot_strengths",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_weaknesses",
+              "displayName": "swot_weaknesses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_opportunities",
+              "displayName": "swot_opportunities",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_threats",
+              "displayName": "swot_threats",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "improvement_notes",
+              "displayName": "improvement_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "interview_prep",
+              "displayName": "interview_prep",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ai_summary",
+              "displayName": "ai_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cv_link",
+              "displayName": "cv_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cover_letter_link",
+              "displayName": "cover_letter_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_found",
+              "displayName": "date_found",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "applied_date",
+              "displayName": "applied_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "cbcad3fa-6178-493b-b3e7-a7a1a3053b38",
+      "name": "P1: Save New Jobs to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        2496,
+        160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P1: Search Configuration').item.json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1507373342,
+          "mode": "list",
+          "cachedResultName": "Filter",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=1507373342"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        304
+      ],
+      "id": "fa6e5e0a-3bd1-42e9-84c3-528672a3039f",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// STATELESS PAGINATION CONTROLLER\n// Page number is carried in the input item itself — no static data needed.\n// • When called from P1: Loop Over Keywords (new keyword): _nextPage is absent → page 0\n// • When called from P1: Pagination Step (next page):      _nextPage carries the next page index\n\nconst maxPages = 5;\nconst resultsPerPage = 25;\n\nconst inputItem = $input.first().json;\n\n// Determine page index\nconst pageNum = (inputItem._nextPage !== undefined) ? Number(inputItem._nextPage) : 0;\n\n// Read keyword config — always from the SplitInBatches loop context\n// (this context is pinned for the entire duration of one keyword's page loop)\nconst loopItem = $('P1: Loop Over Keywords').first().json;\nconst keyword         = loopItem.Keyword            || loopItem.keyword            || \"\";\nconst location        = loopItem.Location           || loopItem.location           || \"\";\nconst experienceLevel = String(loopItem['Experience Level'] || loopItem.experience_level || \"\");\nconst remote          = String(loopItem.Remote      || loopItem.remote             || \"\");\nconst jobType         = String(loopItem['Job Type'] || loopItem.job_type           || \"\");\nconst easyApply       = String(loopItem['Easy Apply']|| loopItem.easy_apply        || \"\");\n\n// Stop condition: exceeded page limit\nif (pageNum >= maxPages) {\n  return [{ json: {\n    stop: true,\n    reason: \"Reached maximum page limit of \" + maxPages,\n    url: null,\n    _keyword: keyword,\n    _location: location\n  }}];\n}\n\nconst startOffset = pageNum * resultsPerPage;\nlet url = \"https://www.linkedin.com/jobs/search/?f_TPR=r604800\";\nurl += `&start=${startOffset}`;\n\nif (keyword !== \"\")  url += `&keywords=${encodeURIComponent(keyword)}`;\nif (location !== \"\") url += `&location=${encodeURIComponent(location)}`;\n\nif (experienceLevel !== \"\") {\n  const map = { \"Internship\":\"1\",\"Entry level\":\"2\",\"Associate\":\"3\",\"Mid-Senior level\":\"4\",\"Director\":\"5\",\"Executive\":\"6\" };\n  const vals = experienceLevel.split(\",\").map(e => { let t=e.trim(); return map[t]||( [\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"].includes(t)?t:\"\"); }).filter(Boolean);\n  if (vals.length) url += `&f_E=${vals.join(\",\")}`;\n}\n\nif (remote !== \"\") {\n  const map = { \"On-Site\":\"1\",\"Remote\":\"2\",\"Hybrid\":\"3\" };\n  const vals = remote.split(\",\").map(e => { let t=e.trim(); return map[t]||([\"1\",\"2\",\"3\"].includes(t)?t:\"\"); }).filter(Boolean);\n  if (vals.length) url += `&f_WT=${vals.join(\",\")}`;\n}\n\nif (jobType !== \"\") {\n  const vals = jobType.split(\",\").map(t => t.trim().charAt(0).toUpperCase()).filter(Boolean);\n  if (vals.length) url += `&f_JT=${vals.join(\",\")}`;\n}\n\nif (easyApply === \"true\" || easyApply === \"TRUE\" || easyApply === true) {\n  url += \"&f_AL=true\";\n}\n\nreturn [{ json: {\n  url,\n  stop: false,\n  currentPage: pageNum + 1,   // human-readable (1-based)\n  _nextPage: pageNum + 1,     // machine use: passed forward to pagination step\n  _keyword: keyword,\n  _location: location\n}}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        400
+      ],
+      "id": "7a2b8731-8770-4830-a966-12d5561ef4e4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c48a4c12-b112-4fb9-ac68-3566f1fa5b98",
+      "name": "P1: Loop Over Keywords",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        992,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P1: Search Configuration').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "afc81c0f-2736-40e6-a96b-4857a4256aac",
+      "name": "P1: Read Existing Job IDs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        544,
+        304
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1ae42fa1-fdfb-4ea4-93ad-1c940ee256dc",
+              "leftValue": "={{ $json.stop }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1488,
+        32
+      ],
+      "id": "a97a1a2d-01b1-450f-8081-85d7cd5270c3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "5e251975-0c00-4694-8c5d-7472ef56ecd5",
+              "leftValue": "={{ $json.job_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c6e45d80-d9eb-4135-bd2e-08469c1b779f",
+      "name": "P1: Has New Jobs?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collapse all inputs into one pagination trigger carrying the next page index.\n// On the \"Save\" branch the Google Sheets append output can drop _currentPage,\n// so we fall back to reading it from the parse node.\nconst allItems = $input.all();\nlet donePage = Number(allItems[0] && allItems[0].json ? allItems[0].json._currentPage : undefined);\nif (!donePage || Number.isNaN(donePage)) {\n  try { donePage = Number($('P1: Parse LinkedIn HTML').first().json._currentPage) || 1; }\n  catch (e) { donePage = 1; }\n}\nreturn [{ json: { _nextPage: donePage, _jobs_processed: allItems.length } }];\n"
+      },
+      "id": "2376e443-1fea-44b0-8a69-b0eba307858d",
+      "name": "P1: Pagination Step",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access the static data of the FILTER node specifically\nconst filterNodeName = 'P1: Filter New Jobs Only'; \nconst staticData = $getWorkflowStaticData(filterNodeName);\n\n// Clean wipe\nstaticData.seenIds = [];\nstaticData.seenKeys = [];\nstaticData.seenUrls = [];\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        304
+      ],
+      "id": "bfff58a6-bd09-49a8-8958-0871c5f49536",
+      "name": "P1: Reset Run Memory",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# 📡 RoleRadar",
+        "height": 90,
+        "width": 260,
+        "color": 4
+      },
+      "id": "3f6f4aca-e25d-4815-bf69-8d5fc28f535a",
+      "name": "RoleRadar Brand",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -414
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "P1: Start Job Search": {
+      "main": [
+        [
+          {
+            "node": "P1: Search Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Search Configuration": {
+      "main": [
+        [
+          {
+            "node": "P1: Reset Run Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: LinkedIn Guest Search": {
+      "main": [
+        [
+          {
+            "node": "P1: Rate Limit Delay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Rate Limit Delay": {
+      "main": [
+        [
+          {
+            "node": "P1: Parse LinkedIn HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Parse LinkedIn HTML": {
+      "main": [
+        [
+          {
+            "node": "P1: Filter New Jobs Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Filter New Jobs Only": {
+      "main": [
+        [
+          {
+            "node": "P1: Has New Jobs?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Save New Jobs to Sheet": {
+      "main": [
+        [
+          {
+            "node": "P1: Pagination Step",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "P1: Loop Over Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Loop Over Keywords": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Read Existing Job IDs": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "P1: LinkedIn Guest Search",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P1: Loop Over Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Has New Jobs?": {
+      "main": [
+        [
+          {
+            "node": "P1: Save New Jobs to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P1: Pagination Step",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Pagination Step": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1: Reset Run Memory": {
+      "main": [
+        [
+          {
+            "node": "P1: Read Existing Job IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "",
+  "meta": {},
+  "id": "",
+  "tags": []
+}

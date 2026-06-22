@@ -1,0 +1,157 @@
+<!-- markdownlint-disable MD033 MD041 -->
+<p align="center">
+  <img src="docs/images/hero.svg" alt="RoleRadar — find, score and auto-apply to the right roles with an AI pipeline in n8n" width="100%">
+</p>
+
+<h1 align="center">📡 RoleRadar</h1>
+
+<p align="center">
+  <b>Find, score, and auto-apply to the right roles — automatically.</b><br>
+  RoleRadar is an end-to-end job-application pipeline built in <a href="https://n8n.io">n8n</a>: it scrapes
+  LinkedIn, scores every role against <i>your</i> profile with an LLM, and auto-generates a tailored CV, cover
+  letter, SWOT analysis and interview study guide — for a few cents per application.
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-3ddc97.svg"></a>
+  <img alt="Built with n8n" src="https://img.shields.io/badge/built%20with-n8n-22d3ee">
+  <img alt="LLM via OpenRouter" src="https://img.shields.io/badge/LLM-OpenRouter-a06bff">
+  <img alt="No code" src="https://img.shields.io/badge/no--code-friendly-6b8bff">
+  <a href="#-contributing"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-ff8a5c"></a>
+</p>
+
+<p align="center">
+  <b>⭐ If RoleRadar saves you a weekend of copy-pasting cover letters, give it a star — it really helps.</b>
+</p>
+
+---
+
+## 💡 Why
+
+Applying to jobs well is repetitive: find roles, read each description, judge fit, then rewrite your CV and
+cover letter for every single one. RoleRadar automates the boring 80% so you spend your time only on the roles
+worth applying to — with documents already drafted and tailored.
+
+It's wired for **cybersecurity / SOC / detection-engineering** roles out of the box (the sample profile is a
+fictional senior security engineer), but every prompt, keyword and language rule is editable — point it at any
+field.
+
+## 🆚 How RoleRadar is different
+
+Most "automate your job search" templates stop at *search → spreadsheet → one cover letter*. RoleRadar goes
+further and is built to actually survive daily use:
+
+- **A real decision pipeline, not a single flow** — 4 composable workflows (discover → archive → score →
+  generate) you can run and schedule independently.
+- **More than a cover letter** — every strong match gets a tailored **CV**, **cover letter**, a strategic
+  **SWOT**, *and* a personalized **interview study guide**.
+- **Explainable scoring** — an explicit 0–100 rubric (skills, seniority, location, comp, company type), not a
+  vibe check, with the reasoning written back to your sheet.
+- **Configurable language gate** — keep only roles you can actually do (English-only by default; exclude any
+  language you don't speak — fully config-driven).
+- **Built to not break** — hardened JSON parsing, retries, centralized model config, and a visible
+  `Needs Review` status instead of silent failures or junk documents.
+- **Secrets done right** — API keys live in n8n credentials, never in the workflow JSON.
+
+## 🧭 How it works
+
+```mermaid
+flowchart LR
+  subgraph Sheet["🗒️ Google Sheet (single source of truth)"]
+    JOBS[(Jobs tab)]
+    FILTER[(Filter tab — your search keywords)]
+    SHORT[(Shortlist)]
+    ARCH[(Archieve)]
+  end
+
+  FILTER --> P1
+  P1["**1 · Discover**<br/>LinkedIn guest search<br/>+ dedupe"] -->|new jobs| JOBS
+  JOBS --> P2["**2 · Score**<br/>AI scoring 0–100<br/>+ SWOT + language gate"]
+  P2 -->|score ≥ threshold| JOBS
+  SHORT --> P3["**3 · Generate**<br/>CV · Cover letter<br/>SWOT · Study guide"]
+  P3 --> DRIVE[(📁 Google Drive<br/>one folder per application)]
+  JOBS -.optional.-> P15["**1.5 · Archive**<br/>JD → Markdown"]
+  P15 --> DRIVE
+```
+
+| Phase | Workflow file | What it does |
+|------:|---------------|--------------|
+| **1 · Discover** | [`1-job-search.json`](workflows/1-job-search.json) | Searches LinkedIn (free guest endpoint) across your keyword clusters, dedupes, writes new jobs to the sheet. |
+| **1.5 · Archive** | [`1.5-job-archive.json`](workflows/1.5-job-archive.json) | Fetches full job descriptions, converts to Markdown, archives them to Drive. |
+| **2 · Score** | [`2-ai-scoring.json`](workflows/2-ai-scoring.json) | Scores each job 0–100 against your profile, extracts skills/SWOT/salary, runs the language gate, shortlists. |
+| **3 · Generate** | [`3-cv-coverletter-generator.json`](workflows/3-cv-coverletter-generator.json) | For strong matches, generates an ATS-tuned CV, cover letter, SWOT and interview study guide as files in Drive. |
+
+## ✨ Features
+
+- 🔎 **LinkedIn search with no API key** — uses the public guest endpoint, paginates, and rate-limits politely.
+- 🧠 **LLM scoring with an explicit rubric** — skills, seniority, location, comp, company type — not vibes.
+- 🌍 **Configurable language gate** — English-only out of the box; exclude any language you don't speak.
+- 🧾 **ATS-optimized CV + cover letter** with anti-"AI-slop" humanization rules baked into the prompts.
+- 🗂️ **Everything in one Google Sheet** — auditable, filterable, no database to run.
+- 💸 **Cheap** — default models cost roughly a few cents per full application. See [cost table](docs/MODELS_AND_COST.md).
+- 🔐 **Secrets done right** — API keys live in n8n credentials, never in the workflow JSON.
+- 🩹 **Resilient** — hardened JSON parsing, retries, and a visible `Needs Review` status instead of silent failures.
+
+## 🚀 Quick start
+
+1. **Import** the four files in [`workflows/`](workflows) into your n8n instance.
+2. **Create credentials** (see [SETUP](docs/SETUP.md)):
+   - `Google Sheets account` (OAuth2) and `Google Drive account` (OAuth2)
+   - `OpenRouter API` → **HTTP Header Auth**: name `Authorization`, value `Bearer sk-or-…`
+3. **Copy the Google Sheet template** — create the tabs/columns from [GOOGLE_SHEET_TEMPLATE](docs/GOOGLE_SHEET_TEMPLATE.md).
+4. **Configure** the `Load Config` / `Set` node at the start of each workflow: paste your `GOOGLE_SHEET_ID`,
+   Drive folder IDs, your real profile, model slugs, and the language gate.
+5. **Run** Discover → Score → Generate (manual trigger). Watch the rows light up in the sheet.
+
+Full walkthrough: **[docs/SETUP.md](docs/SETUP.md)**.
+
+## ⚙️ Configuration at a glance
+
+Everything you tune lives in the first **config node** of each workflow (an n8n `Set` node):
+
+| Setting | Where | Notes |
+|---------|-------|-------|
+| `GOOGLE_SHEET_ID`, `*_FOLDER_ID` | every config node | Your sheet + Drive folders |
+| Search keywords / location / filters | `Filter` tab in the Sheet | One row = one search |
+| `SCORE_THRESHOLD` | Phase 2 config | Default `65` → `Shortlisted` |
+| `LANGUAGE_GATE` + `EXCLUDE_LANGUAGES` | Phase 2 config | `off` \| `english_only` (default) \| `exclude`. See [language gate](docs/SETUP.md#-language-gate). |
+| `SCORING_MODEL` / `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL` | Phase 2 & 3 config | One place to swap models — see [models & cost](docs/MODELS_AND_COST.md) |
+| Candidate profile / CV context | Phase 2 `Set Candidate Profile`, Phase 3 config | Replace the fictional **Alex Mercer** with you |
+
+## 🗂️ Repository structure
+
+```
+role-radar/
+├── workflows/          # the 4 importable n8n workflows (sanitized + branded)
+├── docs/               # setup, architecture, sheet template, models & cost
+├── sheet-template/     # column headers for the Google Sheet
+├── .env.example        # placeholder secrets (optional env-var path)
+└── README.md
+```
+
+## 🔐 Security
+
+API keys are **never** stored in these workflow files — they live in n8n's encrypted credential store and the
+exported JSON only references them by name. Please read **[SECURITY.md](SECURITY.md)** before publishing your
+own fork, and **rotate any key you've ever pasted into a workflow node**.
+
+## 🗺️ Roadmap
+
+- [ ] Optional scheduled triggers (daily cron) per phase
+- [ ] Email/Telegram digest of new shortlisted roles
+- [ ] Pluggable sources beyond LinkedIn (Adzuna, RemoteOK, company boards, RSS)
+- [ ] Export CV/cover letter straight to PDF/Google Docs (not just Markdown)
+
+## 🤝 Contributing
+
+PRs and issues welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first contributions: new job sources,
+better prompts, additional language packs, or a one-click Google Sheet template link.
+
+## 📄 License
+
+[MIT](LICENSE) — do whatever you want, no warranty. Built with [n8n](https://n8n.io) and
+[OpenRouter](https://openrouter.ai).
+
+---
+
+<p align="center"><sub>Not affiliated with LinkedIn. Respect each site's Terms of Service and rate limits, and use responsibly.</sub></p>

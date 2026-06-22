@@ -1,0 +1,1482 @@
+{
+  "name": "RoleRadar · 2 · Score & Filter",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 📡 RoleRadar — Phase 2 · Score & Filter\n\nAI-scores every new job against your profile (0–100), runs a **configurable language gate**, and shortlists the best.\n\n**In:** `Jobs` (status = `New`)  •  **Out:** `Jobs` (`Shortlisted` / `Low Score` / `Needs Review`)\n**Model:** `Load Config` → `SCORING_MODEL`\n**Language gate:** `LANGUAGE_GATE` = `off` | `english_only` | `exclude`  (+ `EXCLUDE_LANGUAGES`)\n\n— github.com/damran/role-radar",
+        "height": 1308,
+        "width": 3456,
+        "color": 4
+      },
+      "id": "bb7f21d8-6ae6-470c-ab86-a82ac2e1d383",
+      "name": "RoleRadar Frame",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -256
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "GOOGLE_SHEET_ID",
+              "stringValue": "YOUR_GOOGLE_SHEET_ID"
+            },
+            {
+              "name": "DRIVE_ROOT_FOLDER_ID",
+              "stringValue": "YOUR_DRIVE_ROOT_FOLDER_ID"
+            },
+            {
+              "name": "SCORE_THRESHOLD",
+              "stringValue": "65"
+            },
+            {
+              "name": "SCORING_MODEL",
+              "stringValue": "deepseek/deepseek-v4-flash"
+            },
+            {
+              "name": "LANGUAGE_GATE",
+              "stringValue": "english_only"
+            },
+            {
+              "name": "EXCLUDE_LANGUAGES",
+              "stringValue": "German"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "373bbc53-34ff-4843-a727-93d20c1d1d63",
+      "name": "P2: Load Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        816,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P2: Load Config').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "New"
+            }
+          ]
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "1a2194ac-91e3-459e-b402-f20149210365",
+      "name": "P2: Get Unscored Jobs",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1200,
+        464
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "6400c0ad-f938-436b-b954-c1ee07eafce4",
+      "name": "P2: Loop Unscored Jobs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1472,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/{{ $json.linkedin_id || $json.job_id.replace('li_','') }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "9acfd590-af54-43f4-b751-778238d29a7a",
+      "name": "P2: Fetch Job Description Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1984,
+        320
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data || '';\nconst jobData = $('P2: Loop Unscored Jobs').first().json;\n\n// ===== ENHANCED LINKEDIN CLEANUP (30-40% token savings) =====\nlet text = html\n  .replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi, ' ')\n  .replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi, ' ')\n  .replace(/<br\\s*\\/?>/gi, '\\n')\n  .replace(/<li[^>]*>/gi, '\\n• ')\n  .replace(/<\\/?( p|div|h[1-6]|section)[^>]*>/gi, '\\n')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/&nbsp;/g, ' ')\n  .replace(/&amp;/g, '&')\n  .replace(/&lt;/g, '<')\n  .replace(/&gt;/g, '>')\n  .replace(/&quot;/g, '\"')\n  // Remove LinkedIn UI junk\n  .replace(/Sign in to access AI-powered advices|Sign in to evaluate your skills/gi, '')\n  .replace(/Email or phone|Password|Forgot password|Join now/gi, '')\n  .replace(/By clicking Continue to join or sign in, you agree to LinkedIn's User Agreement/gi, '')\n  .replace(/Similar jobs[\\s\\S]*?Show (more|fewer) jobs/gi, '')\n  .replace(/People also viewed[\\s\\S]*$/gi, '')\n  .replace(/Referrals increase your chances/gi, '')\n  .replace(/Get notified when a new job is posted/gi, '')\n  .replace(/LinkedIn © \\d{4}/gi, '')\n  .replace(/Seniority level\\s*(Mid-Senior|Entry|Associate|Director)/gi, '')\n  .replace(/Employment type\\s*(Full-time|Part-time|Contract)/gi, '')\n  .replace(/\\d+ applicants/gi, '')\n  .replace(/See who .* has hired for this role/gi, '')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// Limit to 2500 chars (reduced from 3500 for token savings)\nconst cleanText = text.substring(0, 2500);\nconst textLower = cleanText.toLowerCase();\n\n// ===== CONFIGURABLE LANGUAGE GATE =====\n// LANGUAGE_GATE: \"off\" | \"english_only\" | \"exclude\"   EXCLUDE_LANGUAGES: comma list\nconst _cfg = $('P2: Load Config').first().json;\nconst _gate = String(_cfg.LANGUAGE_GATE || 'off').toLowerCase();\nconst _excludeList = String(_cfg.EXCLUDE_LANGUAGES || '');\n\nconst LANG_PACKS = {\n  german:     { aliases: ['german', 'deutsch'], fluent: ['verhandlungssicher', 'fließend', 'muttersprache', 'muttersprachlich', 'deutschkenntnisse'], structural: ['aufgaben', 'anforderungen', 'qualifikationen', 'wir bieten', 'ihr profil', 'stellenbeschreibung', 'festanstellung'] },\n  french:     { aliases: ['french', 'français', 'francais'], fluent: ['courant', 'bilingue', 'langue maternelle'], structural: ['missions', 'profil recherché', 'nous offrons'] },\n  spanish:    { aliases: ['spanish', 'español', 'espanol'], fluent: ['nativo', 'bilingüe', 'imprescindible'], structural: ['requisitos', 'ofrecemos', 'funciones'] },\n  italian:    { aliases: ['italian', 'italiano'], fluent: ['madrelingua', 'fluente'], structural: ['requisiti', 'offriamo', 'mansioni'] },\n  dutch:      { aliases: ['dutch', 'nederlands'], fluent: ['vloeiend', 'moedertaal'], structural: ['taken', 'functie-eisen', 'wij bieden'] },\n  portuguese: { aliases: ['portuguese', 'português', 'portugues'], fluent: ['fluente', 'nativo'], structural: ['requisitos', 'oferecemos'] },\n  polish:     { aliases: ['polish', 'polski'], fluent: ['biegła', 'biegly', 'biegła znajomość'], structural: ['wymagania', 'oferujemy', 'obowiązki'] }\n};\nfunction _targetLangs() {\n  if (_gate === 'off') return [];\n  if (_gate === 'exclude') return _excludeList.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);\n  return ['german', 'french', 'spanish', 'italian', 'dutch', 'portuguese', 'polish']; // english_only\n}\n\nlet languageScore = 0;\nlet languageReason = 'ok';\nlet languageOptionalPenalty = 0;\n\nfor (const langKey of _targetLangs()) {\n  const pack = LANG_PACKS[langKey] || { aliases: [langKey], fluent: [], structural: [] };\n  const aliasGroup = pack.aliases.map(a => a.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')).join('|');\n\n  const definite = [\n    new RegExp('(' + aliasGroup + ')\\\\s*(c1|c2|native|fluent|mother\\\\s*tongue|required|mandatory|essential)', 'i'),\n    new RegExp('(fluent|native|proficient|verhandlungssicher|fließend)\\\\s*(in\\\\s*)?(' + aliasGroup + ')', 'i')\n  ];\n  if (definite.some(r => r.test(textLower)) || pack.fluent.some(w => textLower.includes(w))) {\n    languageScore = 100; languageReason = langKey + '_required'; break;\n  }\n  if (new RegExp('(' + aliasGroup + ')\\\\s*(speaking|language\\\\s*skills?)', 'i').test(textLower)) {\n    languageScore += 50; languageReason = langKey + '_likely';\n  }\n  const struct = pack.structural.filter(w => textLower.includes(w)).length;\n  if (struct > 0) { languageScore += struct * 15; languageReason = 'description_in_' + langKey; }\n  if (new RegExp('(' + aliasGroup + ')\\\\s*(is\\\\s*)?(a\\\\s*plus|preferred|beneficial|nice\\\\s*to\\\\s*have)', 'i').test(textLower)\n      || new RegExp('basic\\\\s*(' + aliasGroup + ')', 'i').test(textLower)) {\n    languageOptionalPenalty = 10; if (languageScore < 50) languageReason = langKey + '_optional';\n  }\n  if (languageScore >= 50) break;\n}\n\nconst languageExcluded = languageScore >= 50;\n\nconst candidateProfile = $('Set Candidate Profile').first().json.candidate_profile;\n\n// ===== IMPROVED SCORING PROMPT =====\nconst scoringPrompt = `You are a strict senior technical recruiting expert specializing in cybersecurity.\n\nAnalyze this job posting for the candidate below. Return ONLY valid JSON.\n\n=== CANDIDATE PROFILE ===\n${candidateProfile}\n\n=== JOB POSTING ===\nTitle: ${jobData.title || ''}\nCompany: ${jobData.company || ''}\nLocation: ${jobData.location || ''}\nPosted: ${jobData.posted_date || ''}\nURL: ${jobData.job_url || ''}\n\nDescription:\n${cleanText}\n\n=== EXPLICIT SCORING RUBRIC ===\nScore 0-100 based on these criteria:\n\nSKILL MATCH (40 points):\n- Core skills (15pts): SIEM (Sumo Logic/Splunk), Detection Engineering, Incident Response\n- Cloud (10pts): AWS/GCP/Azure security experience\n- Automation (10pts): Terraform, CI/CD, Python scripting\n- Bonus (5pts): Detection-as-Code, Purple Teaming\n\nSENIORITY FIT (20 points):\n- Senior/Lead/Staff title = 20pts\n- Mid-level with growth path = 10pts\n- Junior/Entry = 0pts\n\nLOCATION/REMOTE (15 points):\n- Berlin on-site or Remote EU = 15pts\n- Germany (other cities) = 10pts\n- EU with relocation = 5pts\n- Non-EU = 0pts\n\nCOMPANY TYPE (15 points):\n- Tech startup/scale-up = 15pts\n- Enterprise with modern stack = 10pts\n- Traditional enterprise = 5pts\n\nCOMPENSATION (10 points):\n- Salary visible €80K+ = 10pts\n- Salary visible €60-80K = 5pts\n- No salary info = 0pts\n\nAUTO BOOST (+8 each): Mentions Sumo Logic, Splunk, Detection-as-Code, SentinelOne, Cloudflare WAF, Terraform+CI/CD, multi-cloud SOC\nAUTO REDUCE (-10 each): Requires C1/C2 German (mandatory), CISSP mandatory, pen-test only role, non-EU security clearance\n\nAPPLY THIS PENALTY IF APPLICABLE: ${languageOptionalPenalty > 0 ? '-10pts (a non-English language is optional/nice-to-have)' : 'None'}\n\n=== RECOMMENDATION MAPPING ===\nBased on final score:\n- 85-100: \"Apply immediately\"\n- 75-84: \"Strong apply\"\n- 65-74: \"Worth applying\"\n- 50-64: \"Stretch role\"\n- <50: \"Skip\"\n\nReturn this exact JSON structure:\n{\n  \"score\": <integer 0-100>,\n  \"recommendation\": \"<Apply immediately|Strong apply|Worth applying|Stretch role|Skip>\",\n  \"callback_likelihood\": \"<High|Medium|Low|Very Low>\",\n  \"salary_range\": \"<extracted or Not specified>\",\n  \"remote_type\": \"<Remote|Hybrid|On-site|Unknown>\",\n  \"company_size\": \"<Startup|Scale-up|Mid-market|Enterprise>\",\n  \"company_sector\": \"<string>\",\n  \"company_summary\": \"<2 sentence company description>\",\n  \"matched_skills\": [\"skill1\", \"skill2\"],\n  \"missing_skills\": [\"skill1\", \"skill2\"],\n  \"green_flags\": [\"flag1\", \"flag2\"],\n  \"red_flags\": [\"flag1\"],\n  \"swot\": {\n    \"strengths\": [\"s1\", \"s2\", \"s3\"],\n    \"weaknesses\": [\"w1\", \"w2\"],\n    \"opportunities\": [\"o1\", \"o2\"],\n    \"threats\": [\"t1\"]\n  },\n  \"improvement_notes\": [\"note1\", \"note2\"],\n  \"interview_prep\": [\"tip1\", \"tip2\"],\n  \"summary\": \"<2 sentence fit assessment>\"\n}`;\n\nreturn {\n    ...jobData,\n    clean_job_text: cleanText,\n    scoring_prompt: scoringPrompt,\n    language_excluded: languageExcluded,\n    language_score: languageScore,\n    language_reason: languageReason,\n    language_optional_penalty: languageOptionalPenalty,\n    status: languageExcluded ? 'Rejected - Language Requirement' : 'New'\n};"
+      },
+      "id": "eda64260-90f0-4b95-b395-7925ba95aca3",
+      "name": "P2: Extract & Clean Job Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2336,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            },
+            {
+              "name": "X-Title",
+              "value": "N8N Job Hunter"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": {{ JSON.stringify($('P2: Load Config').first().json.SCORING_MODEL) }},\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.scoring_prompt) }}\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" },\n  \"temperature\": 0.1,\n  \"max_tokens\": 4000\n}",
+        "options": {
+          "timeout": 120000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "27a2c087-07ee-4c98-89c5-53a8cc7a4670",
+      "name": "P2: DeepSeek AI Scoring",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2768,
+        64
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Robust parser for the AI scoring response.\n// Handles OpenRouter error bodies (no choices), markdown fences, <think> blocks,\n// and truncated/whitespace-wrapped JSON. Failures surface as \"Needs Review\".\nconst jobData = $('P2: Extract & Clean Job Text').first().json;\nconst resp = $input.first().json;\n\nfunction extractJson(raw) {\n  if (raw == null) return null;\n  let s = String(raw)\n    .replace(/<think>[\\s\\S]*?<\\/think>/gi, ' ')\n    .replace(/```json/gi, ' ')\n    .replace(/```/g, ' ');\n  const a = s.indexOf('{');\n  const b = s.lastIndexOf('}');\n  if (a === -1 || b === -1 || b <= a) return null;\n  try { return JSON.parse(s.slice(a, b + 1)); } catch (e) { return null; }\n}\n\nconst rawText = (resp && resp.choices && resp.choices[0] && resp.choices[0].message)\n  ? resp.choices[0].message.content : null;\nconst apiError = (resp && resp.error && resp.error.message)\n  ? resp.error.message\n  : ((resp && resp.choices) ? null : 'No choices returned from model');\nconst parsed = extractJson(rawText);\nconst threshold = parseInt($('P2: Load Config').first().json.SCORE_THRESHOLD) || 65;\n\nif (!parsed) {\n  return {\n    ...jobData,\n    score: '',\n    above_threshold: false,\n    recommendation: 'Needs Review',\n    ai_summary: 'AI response could not be parsed. ' + (apiError || 'Invalid JSON')\n      + (rawText ? ' | raw: ' + String(rawText).slice(0, 300) : ''),\n    status: 'Needs Review'\n  };\n}\n\nlet score = parseInt(parsed.score) || 0;\nif (jobData.language_optional_penalty > 0) {\n  score = Math.max(0, score - jobData.language_optional_penalty);\n}\n\nreturn {\n  ...jobData,\n  score: score,\n  above_threshold: score >= threshold,\n  recommendation: parsed.recommendation || '',\n  callback_likelihood: parsed.callback_likelihood || '',\n  salary_range: parsed.salary_range || 'Not specified',\n  remote_type: parsed.remote_type || 'Unknown',\n  company_size: parsed.company_size || '',\n  company_sector: parsed.company_sector || '',\n  company_summary: parsed.company_summary || '',\n  matched_skills: (parsed.matched_skills || []).join(', '),\n  missing_skills: (parsed.missing_skills || []).join(', '),\n  green_flags: (parsed.green_flags || []).join(', '),\n  red_flags: (parsed.red_flags || []).join(', '),\n  swot_strengths: ((parsed.swot && parsed.swot.strengths) || []).join(' | '),\n  swot_weaknesses: ((parsed.swot && parsed.swot.weaknesses) || []).join(' | '),\n  swot_opportunities: ((parsed.swot && parsed.swot.opportunities) || []).join(' | '),\n  swot_threats: ((parsed.swot && parsed.swot.threats) || []).join(' | '),\n  improvement_notes: (parsed.improvement_notes || []).join(' | '),\n  interview_prep: (parsed.interview_prep || []).join(' | '),\n  ai_summary: parsed.summary || '',\n  status: score >= threshold ? 'Shortlisted' : 'Low Score'\n};\n"
+      },
+      "id": "bae7cc54-eb16-459f-9f10-93e283ca66af",
+      "name": "P2: Parse AI Score Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "score-check",
+              "leftValue": "={{ $json.above_threshold }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ec3dfb7e-2db5-44d0-9031-2f5595f282c3",
+      "name": "P2: Score Above Threshold?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3440,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P2: Load Config').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.job_id }}",
+            "score": "={{ $json.score }}",
+            "status": "Shortlisted",
+            "recommendation": "={{ $json.recommendation }}",
+            "callback_likelihood": "={{ $json.callback_likelihood }}",
+            "salary_range": "={{ $json.salary_range }}",
+            "remote_type": "={{ $json.remote_type }}",
+            "company_size": "={{ $json.company_size }}",
+            "company_sector": "={{ $json.company_sector }}",
+            "company_summary": "={{ $json.company_summary }}",
+            "matched_skills": "={{ $json.matched_skills }}",
+            "missing_skills": "={{ $json.missing_skills }}",
+            "green_flags": "={{ $json.green_flags }}",
+            "red_flags": "={{ $json.red_flags }}",
+            "swot_strengths": "={{ $json.swot_strengths }}",
+            "swot_weaknesses": "={{ $json.swot_weaknesses }}",
+            "swot_opportunities": "={{ $json.swot_opportunities }}",
+            "swot_threats": "={{ $json.swot_threats }}",
+            "improvement_notes": "={{ $json.improvement_notes }}",
+            "interview_prep": "={{ $json.interview_prep }}",
+            "ai_summary": "={{ $json.ai_summary }}",
+            "row_number": 0
+          },
+          "matchingColumns": [
+            "job_id"
+          ],
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_type",
+              "displayName": "remote_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "posted_date",
+              "displayName": "posted_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "listing_age_days",
+              "displayName": "listing_age_days",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "job_url",
+              "displayName": "job_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "apply_url",
+              "displayName": "apply_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "search_keyword",
+              "displayName": "search_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "dedup_key",
+              "displayName": "dedup_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommendation",
+              "displayName": "recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "callback_likelihood",
+              "displayName": "callback_likelihood",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "salary_range",
+              "displayName": "salary_range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company_sector",
+              "displayName": "company_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company_summary",
+              "displayName": "company_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "matched_skills",
+              "displayName": "matched_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "missing_skills",
+              "displayName": "missing_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "green_flags",
+              "displayName": "green_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "red_flags",
+              "displayName": "red_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_strengths",
+              "displayName": "swot_strengths",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_weaknesses",
+              "displayName": "swot_weaknesses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_opportunities",
+              "displayName": "swot_opportunities",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_threats",
+              "displayName": "swot_threats",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "improvement_notes",
+              "displayName": "improvement_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "interview_prep",
+              "displayName": "interview_prep",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ai_summary",
+              "displayName": "ai_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cv_link",
+              "displayName": "cv_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cover_letter_link",
+              "displayName": "cover_letter_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date_found",
+              "displayName": "date_found",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "applied_date",
+              "displayName": "applied_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "5f674f20-01ae-4123-bdd1-331286f59618",
+      "name": "P2: Update Shortlisted Job",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        3504,
+        752
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P2: Load Config').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.job_id }}",
+            "score": "={{ $json.score }}",
+            "status": "={{ $json.status }}",
+            "recommendation": "={{ $json.recommendation }}",
+            "matched_skills": "={{ $json.matched_skills }}",
+            "missing_skills": "={{ $json.missing_skills }}",
+            "ai_summary": "={{ $json.ai_summary }}",
+            "row_number": 0
+          },
+          "matchingColumns": [
+            "job_id"
+          ],
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_type",
+              "displayName": "remote_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted_date",
+              "displayName": "posted_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "listing_age_days",
+              "displayName": "listing_age_days",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "job_url",
+              "displayName": "job_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "apply_url",
+              "displayName": "apply_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "search_keyword",
+              "displayName": "search_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "dedup_key",
+              "displayName": "dedup_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommendation",
+              "displayName": "recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "callback_likelihood",
+              "displayName": "callback_likelihood",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "salary_range",
+              "displayName": "salary_range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_sector",
+              "displayName": "company_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_summary",
+              "displayName": "company_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "matched_skills",
+              "displayName": "matched_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "missing_skills",
+              "displayName": "missing_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "green_flags",
+              "displayName": "green_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "red_flags",
+              "displayName": "red_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_strengths",
+              "displayName": "swot_strengths",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_weaknesses",
+              "displayName": "swot_weaknesses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_opportunities",
+              "displayName": "swot_opportunities",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_threats",
+              "displayName": "swot_threats",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "improvement_notes",
+              "displayName": "improvement_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "interview_prep",
+              "displayName": "interview_prep",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ai_summary",
+              "displayName": "ai_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cv_link",
+              "displayName": "cv_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cover_letter_link",
+              "displayName": "cover_letter_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date_found",
+              "displayName": "date_found",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "applied_date",
+              "displayName": "applied_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "42dcb5c1-8c20-47a0-9874-0621aa473e8b",
+      "name": "P2: Update Low-Score Job",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        2960,
+        704
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        608,
+        464
+      ],
+      "id": "2fdeb35f-eabe-4c1e-b575-51bd41adff84",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4050bf57-99d9-44ef-b21c-b969b3e252bd",
+              "name": "candidate_profile",
+              "value": "Name: Alex Mercer\nCurrent Title: Senior Security Engineer / Detection & Response Lead\nLocation: Berlin, Germany\nLanguages: English (Fluent/Professional), German (Intermediate B1/B2)\nExperience: 12+ years in Cybersecurity, SOC, and Detection Engineering\n\n[EXECUTIVE SUMMARY]\nSenior cybersecurity engineer with 12+ years building and scaling Security Operations Centers (SOC) across cloud and enterprise environments. Track record of deploying multi-cloud SOC infrastructure (AWS, Azure, GCP), tuning SIEM pipelines, and cutting incident response times. Strong in migrating manual security workflows to Detection-as-Code using Terraform and CI/CD. Hands-on across incident response, threat hunting, and infrastructure hardening.\n\n[CORE COMPETENCIES]\n- Security Operations: Multi-cloud SOC, Detection Engineering, Incident Response, Threat Hunting, Purple Teaming\n- Cloud & Automation: AWS, GCP, Azure, Detection-as-Code, Terraform, GitHub CI/CD, Python, Bash\n- SIEM & EDR: Sumo Logic, Splunk, SentinelOne, ELK Stack\n- Network & AppSec: Cloudflare WAF, F5 BigIP ASM/APM, Checkpoint Firewalls, Cisco ISE (NAC), IDS/IPS (Zeek, Suricata)\n- PKI & Email Security: AD PKI infrastructure, DMARC/DKIM/SPF policies\n- Threat Intelligence: MISP integration, DNS Firewall, open-source threat feeds\n\n[PROFESSIONAL EXPERIENCE]\n1. Nimbus Retail GmbH | Berlin, Germany | Senior Security Engineer (2021 - Present)\n- Built the company's first multi-cloud SOC with centralized SIEM (Sumo Logic) across AWS, Azure, and GCP\n- Authored 150+ custom detection rules; automated alerting via Slack/Jira/PagerDuty\n- Drove Detection-as-Code (Terraform + GitHub CI/CD), cutting deployment errors by ~85%\n- Reduced SIEM ingestion cost by ~20% while improving coverage\n- Hardened applications and endpoints via Cloudflare WAF tuning and SentinelOne EDR optimization\n\n2. Helios Defense Systems | Remote/EU | Lead Security Engineer (2013 - 2021)\n- Secured mission-critical multi-tier networks to strict compliance standards\n- Architected F5 BigIP ASM (WAF), Checkpoint Firewalls, and Cisco ISE for NAC\n- Deployed Network Security Monitoring with Security Onion and Zeek\n- Built a layered AD PKI infrastructure\n- Stood up MISP-based threat intelligence integrated with the wider security stack\n- Authored DMARC/DKIM/SPF policies that significantly reduced phishing\n\n[CERTIFICATIONS & EDUCATION]\n- B.Sc. Computer Engineering\n- AWS Certified Solutions Architect - Associate\n- AWS Certified Cloud Practitioner\n- HashiCorp Terraform Associate\n- Certified Ethical Hacker (CEH)",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        464
+      ],
+      "id": "57e35d64-21e4-4c59-bd7a-e377875cb5cc",
+      "name": "Set Candidate Profile"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "300bfbee-0e7c-48df-ac7f-feb257c8b622",
+              "leftValue": "={{ $json.language_excluded }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2544,
+        288
+      ],
+      "id": "bd161755-419a-4f20-bd4b-788496beb94c",
+      "name": "P2: Language Gate Passed?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pre-fetch LANGUAGE GATE using sheet data (title/location/keyword) only.\n// Skips an expensive LinkedIn fetch + delay on jobs that obviously require a\n// language you didn't list as spoken. Driven by config:\n//   LANGUAGE_GATE      = \"off\" | \"english_only\" | \"exclude\"\n//   EXCLUDE_LANGUAGES  = comma list (used when gate = \"exclude\")\nconst job = $input.first().json;\nconst cfg = $('P2: Load Config').first().json;\nconst gate = String(cfg.LANGUAGE_GATE || 'off').toLowerCase();\nconst excludeList = String(cfg.EXCLUDE_LANGUAGES || '');\n\nconst ALIASES = {\n  german: ['german', 'deutsch', 'deutschsprachig', 'muttersprachler'],\n  french: ['french', 'francais', 'français'],\n  spanish: ['spanish', 'espanol', 'español'],\n  italian: ['italian', 'italiano'],\n  dutch: ['dutch', 'nederlands'],\n  portuguese: ['portuguese', 'portugues', 'português'],\n  polish: ['polish', 'polski']\n};\nfunction targets() {\n  if (gate === 'off') return [];\n  if (gate === 'exclude') return excludeList.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);\n  return ['german', 'french', 'spanish', 'italian', 'dutch', 'portuguese', 'polish']; // english_only\n}\nconst haystack = [job.title || '', job.location || '', job.search_keyword || ''].join(' ').toLowerCase();\n\nlet reject = false;\nfor (const L of targets()) {\n  for (const a of (ALIASES[L] || [L])) {\n    if (haystack.includes(a + ' speaking') || haystack.includes(a + '-speaking') ||\n        haystack.includes('c1 ' + a) || haystack.includes('c2 ' + a) ||\n        haystack.includes(a + ' required') || haystack.includes('fluent ' + a) ||\n        haystack.includes('native ' + a)) { reject = true; break; }\n  }\n  if (reject) break;\n}\n\nreturn {\n  ...job,\n  early_language_reject: reject,\n  status: reject ? 'Rejected - Language Requirement' : (job.status || 'New')\n};\n"
+      },
+      "id": "f44a6b0a-3731-4b5f-b437-35540f0fe424",
+      "name": "P2: Language Pre-Check (No Fetch)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "pre-german-check",
+              "leftValue": "={{ $json.early_language_reject }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f515c65d-b4e3-4a86-a533-baad5eb3596a",
+      "name": "P2: Skip Excluded-Language Jobs?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "seconds"
+      },
+      "id": "df285e8e-759c-431f-8857-8782e6e25ed1",
+      "name": "P2: Delay After Gemini",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2992,
+        80
+      ],
+      "webhookId": "a1b2c3d4-0003-4000-8000-aabbccdd0004",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "id": "0af58898-7ae4-4bc1-8d58-c1a263436b82",
+      "name": "P2: Delay After Fetch",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        288
+      ],
+      "webhookId": "eef82939-47a8-41c7-9127-5e804605e87f"
+    },
+    {
+      "parameters": {
+        "content": "# 📡 RoleRadar",
+        "height": 90,
+        "width": 260,
+        "color": 5
+      },
+      "id": "b701438c-1942-4664-b017-e81a4242d1ed",
+      "name": "RoleRadar Brand",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -366
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "P2: Load Config": {
+      "main": [
+        [
+          {
+            "node": "Set Candidate Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Get Unscored Jobs": {
+      "main": [
+        [
+          {
+            "node": "P2: Loop Unscored Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Fetch Job Description Page": {
+      "main": [
+        [
+          {
+            "node": "P2: Delay After Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P2: Loop Unscored Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Update Shortlisted Job": {
+      "main": [
+        [
+          {
+            "node": "P2: Loop Unscored Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Update Low-Score Job": {
+      "main": [
+        [
+          {
+            "node": "P2: Loop Unscored Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "P2: Load Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Candidate Profile": {
+      "main": [
+        [
+          {
+            "node": "P2: Get Unscored Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Loop Unscored Jobs": {
+      "main": [
+        [],
+        [
+          {
+            "node": "P2: Language Pre-Check (No Fetch)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Extract & Clean Job Text": {
+      "main": [
+        [
+          {
+            "node": "P2: Language Gate Passed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Delay After Gemini": {
+      "main": [
+        [
+          {
+            "node": "P2: Parse AI Score Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Parse AI Score Response": {
+      "main": [
+        [
+          {
+            "node": "P2: Score Above Threshold?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Score Above Threshold?": {
+      "main": [
+        [
+          {
+            "node": "P2: Update Shortlisted Job",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P2: Update Low-Score Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Delay After Fetch": {
+      "main": [
+        [
+          {
+            "node": "P2: Extract & Clean Job Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: DeepSeek AI Scoring": {
+      "main": [
+        [
+          {
+            "node": "P2: Delay After Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Language Pre-Check (No Fetch)": {
+      "main": [
+        [
+          {
+            "node": "P2: Skip Excluded-Language Jobs?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Skip Excluded-Language Jobs?": {
+      "main": [
+        [
+          {
+            "node": "P2: Fetch Job Description Page",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P2: Update Low-Score Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P2: Language Gate Passed?": {
+      "main": [
+        [
+          {
+            "node": "P2: DeepSeek AI Scoring",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P2: Update Low-Score Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "",
+  "meta": {},
+  "id": "",
+  "tags": []
+}

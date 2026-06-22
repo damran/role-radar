@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-label="RoleRadar">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f1f"/>
+      <stop offset="1" stop-color="#141a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="0.5" stop-color="#6b8bff"/>
+      <stop offset="1" stop-color="#a06bff"/>
+    </linearGradient>
+    <radialGradient id="sweep" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <style>
+      .t  { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .title { font-size: 64px; font-weight: 800; fill: #ffffff; letter-spacing: -1px; }
+      .sub   { font-size: 24px; font-weight: 500; fill: #c7cede; }
+      .chip  { font-size: 19px; font-weight: 700; fill: #0a0f1f; }
+      .pin   { font-size: 18px; font-weight: 600; fill: #8b93ad; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="360" rx="20" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent)"/>
+
+  <!-- radar motif -->
+  <g transform="translate(1010,180)" opacity="0.9">
+    <circle r="120" fill="url(#sweep)"/>
+    <circle r="40" fill="none" stroke="#2a3350" stroke-width="2"/>
+    <circle r="80" fill="none" stroke="#2a3350" stroke-width="2"/>
+    <circle r="118" fill="none" stroke="#2a3350" stroke-width="2"/>
+    <line x1="0" y1="0" x2="83" y2="-83" stroke="#22d3ee" stroke-width="3"/>
+    <circle cx="60" cy="-44" r="6" fill="#a06bff"/>
+    <circle cx="-38" cy="30" r="5" fill="#6b8bff"/>
+    <circle cx="22" cy="70" r="5" fill="#22d3ee"/>
+  </g>
+
+  <text x="60" y="120" class="t title">&#128225; RoleRadar</text>
+  <text x="60" y="165" class="t sub">Find, score &amp; auto-apply to the right roles &#8212; an AI job pipeline in n8n</text>
+
+  <g transform="translate(60,220)">
+    <rect x="0"   y="0" width="180" height="56" rx="12" fill="#22d3ee"/>
+    <text x="22"  y="36" class="t chip">1 &#183; Discover</text>
+
+    <rect x="215" y="0" width="175" height="56" rx="12" fill="#6b8bff"/>
+    <text x="237" y="36" class="t chip">1.5 &#183; Archive</text>
+
+    <rect x="415" y="0" width="150" height="56" rx="12" fill="#a06bff"/>
+    <text x="437" y="36" class="t chip">2 &#183; Score</text>
+
+    <rect x="590" y="0" width="185" height="56" rx="12" fill="#3ddc97"/>
+    <text x="612" y="36" class="t chip">3 &#183; Generate</text>
+  </g>
+
+  <text x="60" y="325" class="t pin">n8n &#183; OpenRouter &#183; Google Sheets + Drive &#183; ~pennies per application</text>
+</svg>

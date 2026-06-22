@@ -1,0 +1,1508 @@
+{
+  "name": "RoleRadar · 3 · Generate Docs",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 📡 RoleRadar — Phase 3 · Generate Docs\n\nFor strong matches, generates an ATS-tuned **CV**, **cover letter**, **SWOT** and **interview study guide** — one Drive folder per application.\n\n**In:** `Shortlist`  •  **Out:** Drive folders + `Jobs` (status = `Docs Generated`)\n**Models:** `Set Job ID` → `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL`\n\n— github.com/damran/role-radar",
+        "height": 1388,
+        "width": 4144,
+        "color": 3
+      },
+      "id": "b06a9254-b3da-418f-82e6-5efac6ed5992",
+      "name": "RoleRadar Frame",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -288
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7074462f-66d3-46e7-9f35-63b94f183244",
+      "name": "P3: Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "GOOGLE_SHEET_ID",
+              "stringValue": "YOUR_GOOGLE_SHEET_ID"
+            },
+            {
+              "name": "DRIVE_ROOT_FOLDER_ID",
+              "stringValue": "YOUR_DRIVE_ROOT_FOLDER_ID"
+            },
+            {
+              "name": "CV_MODEL",
+              "stringValue": "anthropic/claude-sonnet-4.5"
+            },
+            {
+              "name": "CL_MODEL",
+              "stringValue": "anthropic/claude-sonnet-4.5"
+            },
+            {
+              "name": "SWOT_MODEL",
+              "stringValue": "deepseek/deepseek-v4-flash"
+            },
+            {
+              "name": "CANDIDATE_NAME",
+              "stringValue": "Alex Mercer"
+            },
+            {
+              "name": "CANDIDATE_EMAIL",
+              "stringValue": "alex.mercer@example.com"
+            },
+            {
+              "name": "CANDIDATE_PHONE",
+              "stringValue": "+49 30 1234 5678"
+            },
+            {
+              "name": "CANDIDATE_LINKEDIN",
+              "stringValue": "linkedin.com/in/alex-mercer/"
+            },
+            {
+              "name": "CANDIDATE_LOCATION",
+              "stringValue": "Berlin, Germany"
+            },
+            {
+              "name": "FULL_CV_CONTEXT",
+              "stringValue": "Name: Alex Mercer\nCurrent Title: Senior Security Engineer / Detection & Response Lead\nLocation: Berlin, Germany\nLanguages: English (Fluent), German (B1/B2)\nExperience: 12+ years in Cybersecurity, SOC, and Detection Engineering\n\n[EXECUTIVE SUMMARY]\nSenior cybersecurity engineer with 12+ years building and scaling SOCs across cloud and enterprise environments. Track record deploying multi-cloud SOC infrastructure (AWS, Azure, GCP), tuning SIEM pipelines, and reducing response times. Expert in Detection-as-Code using Terraform and CI/CD pipelines.\n\n[CORE COMPETENCIES]\n- Security Operations: Multi-cloud SOC, Detection Engineering, Incident Response, Threat Hunting, Purple Teaming\n- Cloud & Automation: AWS, GCP, Azure, Detection-as-Code, Terraform, GitHub CI/CD, Python, Bash\n- SIEM & EDR: Sumo Logic, Splunk, SentinelOne, ELK Stack\n- Network & AppSec: Cloudflare WAF, F5 BigIP ASM/APM, Checkpoint Firewalls, Cisco ISE\n- PKI & Email Security: AD PKI infrastructure, DMARC/DKIM/SPF policies\n- Threat Intelligence: MISP integration, DNS Firewall, open-source threat feeds\n\n[PROFESSIONAL EXPERIENCE]\n1. Nimbus Retail GmbH | Berlin | Senior Security Engineer (2021 - Present)\n- Built the company's first multi-cloud SOC with centralized SIEM (Sumo Logic) across AWS, Azure, GCP\n- Authored 150+ custom detection rules; integrated alerting via Slack/Jira/PagerDuty\n- Championed Detection-as-Code (Terraform + GitHub CI/CD), reducing deployment errors by ~85%\n- Optimized SIEM ingestion, reducing cost by ~20% while improving coverage\n- Hardened applications via Cloudflare WAF tuning and SentinelOne EDR optimization\n\n2. Helios Defense Systems | Remote/EU | Lead Security Engineer (2013 - 2021)\n- Secured mission-critical multi-tier networks to strict compliance standards\n- Architected F5 BigIP ASM (WAF), Checkpoint Firewalls, Cisco ISE for NAC\n- Deployed Network Security Monitoring with Security Onion, Zeek\n- Set up AD PKI infrastructure\n- Stood up MISP-based threat intelligence\n- Created DMARC/DKIM/SPF policies that significantly reduced phishing\n\n[CERTIFICATIONS]\n- AWS Certified Solutions Architect - Associate\n- AWS Certified Cloud Practitioner\n- HashiCorp Terraform Associate\n- Certified Ethical Hacker (CEH)\n\n[EDUCATION]\nB.Sc. Computer Engineering"
+            },
+            {
+              "name": "DRIVE_UPLOAD_ROOT_FOLDER_ID",
+              "stringValue": "YOUR_APPLICATIONS_FOLDER_ID"
+            },
+            {
+              "name": "STUDY_MODEL",
+              "stringValue": "deepseek/deepseek-v4-flash"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4dbae934-88da-4ba5-b4b0-b37c2d277792",
+      "name": "P3: Set Job ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P3: Set Job ID').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Shortlist",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "recommendation",
+              "lookupValue": "Apply immediately"
+            },
+            {
+              "lookupColumn": "recommendation",
+              "lookupValue": "Strong apply"
+            }
+          ]
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "be847741-903d-4230-8cb2-6edf2b96eed7",
+      "name": "P3: Load Jobs From Shortlist",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        32,
+        240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const jobs = $input.all();\n\nconst validJobs = jobs.filter(item => {\n  // 1. Better Recommendation Check (handles multiple spaces/tabs)\n  const rec = item.json.recommendation || '';\n//  const isStrongRecommendation = /apply immediately|strong\\s+apply/i.test(rec);\n  const isStrongRecommendation = /apply immediately/i.test(rec);\n  \n  // 2. Already Processed Check\n  const hasCV = item.json.cv_link && item.json.cv_link.trim() !== '';\n  const isDone = (item.json.status || '').toLowerCase() === 'docs generated';\n  const alreadyProcessed = hasCV || isDone;\n\n  // 3. Location Check\n  const location = (item.json.location || '').toLowerCase();\n  const isBerlin = location.includes('berlin');\n  \n  // Combine all three\n  return isStrongRecommendation && !alreadyProcessed; //&& isBerlin;\n});\n\nif (validJobs.length === 0) {\n  return [{ json: { message: 'No unprocessed jobs found', count: 0 } }];\n}\n\nreturn validJobs;"
+      },
+      "id": "e3d2ba2d-f305-4e2c-9b2b-cd53bd8e40d3",
+      "name": "P3: Filter Strong Recommendations",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3384e34e-d457-4824-97e5-3f74ddcf655f",
+      "name": "P3: Loop Through Jobs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        384,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.job_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "a22d3431-075a-4fc8-93e7-8e23f52aed92",
+      "name": "P3: Fetch Full Job Description",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        640,
+        256
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data || '';\nconst jobRow = $('P3: Loop Through Jobs').first().json;\nconst config = $('P3: Set Job ID').first().json;\n\n// Enhanced LinkedIn HTML cleanup\nlet cleanText = html\n  .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')\n  .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')\n  .replace(/<br\\s*\\/?>/gi, '\\n')\n  .replace(/<li[^>]*>/gi, '\\n• ')\n  .replace(/<\\/?( p|div|h[1-6]|section)[^>]*>/gi, '\\n')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/&nbsp;/g, ' ')\n  .replace(/&amp;/g, '&')\n  .replace(/&lt;/g, '<')\n  .replace(/&gt;/g, '>')\n  .replace(/&quot;/g, '\"')\n  // Remove LinkedIn UI junk\n  .replace(/Sign in to access AI-powered advices|Sign in to evaluate your skills/gi, '')\n  .replace(/Email or phone|Password|Forgot password|Join now/gi, '')\n  .replace(/By clicking Continue to join or sign in, you agree to LinkedIn's User Agreement/gi, '')\n  .replace(/Similar jobs[\\s\\S]*?Show (more|fewer) jobs/gi, '')\n  .replace(/People also viewed[\\s\\S]*$/gi, '')\n  .replace(/Referrals increase your chances/gi, '')\n  .replace(/Get notified when a new job is posted/gi, '')\n  .replace(/LinkedIn © \\d{4}/gi, '')\n  .replace(/Show more|Show less/gi, '')\n  .replace(/About the company[\\s\\S]*?(?=Requirements|Qualifications|What you|Your role)/gi, '')\n  .replace(/Set alert for similar jobs/gi, '')\n  .replace(/\\d+ applicants/gi, '')\n  .replace(/See who .* has hired for this role/gi, '')\n  .replace(/\\s+/g, ' ')\n  .trim()\n  .substring(0, 5000);\n\nconst title = jobRow.title || '';\nconst company = jobRow.company || '';\nconst location = jobRow.location || '';\nconst score = jobRow.score || '';\nconst matchedSkills = jobRow.matched_skills || '';\nconst missingSkills = jobRow.missing_skills || '';\nconst greenFlags = jobRow.green_flags || '';\nconst redFlags = jobRow.red_flags || '';\nconst fullCv = config.FULL_CV_CONTEXT;\nconst candidateName = config.CANDIDATE_NAME;\nconst email = config.CANDIDATE_EMAIL;\nconst linkedin = config.CANDIDATE_LINKEDIN;\nconst locationCandidate = config.CANDIDATE_LOCATION;\nconst phone = config.CANDIDATE_PHONE;\n\n// ENHANCED ATS CV PROMPT with humanization rules\nconst cvPrompt = `You are an expert ATS-optimized cybersecurity resume writer.\n\nCreate a tailored, ATS-optimized CV for ${candidateName} for this specific role.\n\n=== TARGET JOB ===\nTitle: ${title}\nCompany: ${company}\nLocation: ${location}\nKey matched skills: ${matchedSkills}\nGaps to address: ${missingSkills}\n\nJob Description:\n${cleanText}\n\n=== CANDIDATE PROFILE ===\n${fullCv}\n\n=== STRICT ATS RULES ===\n- Single column only. No tables, no graphics, no text boxes, no skill bars, no icons.\n- Standard section headers: PROFESSIONAL SUMMARY, CORE SKILLS, PROFESSIONAL EXPERIENCE, EDUCATION, CERTIFICATIONS\n- Use the X-Y-Z formula: Accomplished [X] as measured by [Y], by doing [Z]\n- Quantify every achievement with percentages, dollar amounts, or time saved\n- Mirror job-relevant keywords naturally (no stuffing)\n- Date format: MM/YYYY\n- Maximum 2 pages equivalent\n- Output plain markdown with standard headers and bullet points only\n- Do NOT invent tools, certifications, or achievements\n- Tailor the professional summary to specifically match this role\n\n=== HUMANIZATION RULES ===\n- Vary sentence length (mix 5-word and 20-word sentences)\n- Use contractions naturally where appropriate\n- AVOID these AI-flagged words: delve, spearheaded, leverage, synergy, robust, comprehensive, utilize, facilitate, endeavor\n- Include ONE specific challenge or trade-off from past experience\n- Write as if a human professional wrote this, not a template\n\nAt the END, add a === CV ANALYSIS === section:\n- ATS Match Estimate: X%\n- Top 5 keywords used from JD\n- 2 strengths of this CV version\n- 2 areas to improve further`;\n\n// ENHANCED COVER LETTER PROMPT with humanization\nconst clPrompt = `You are a professional cover letter writer who creates compelling, human-sounding letters.\n\nWrite a cover letter for ${candidateName} applying to:\n\n=== ROLE ===\nTitle: ${title}\nCompany: ${company}\nLocation: ${location}\nWhat makes this role appealing: ${greenFlags}\n\n=== KEY MATCHING POINTS ===\n${matchedSkills}\n\n=== CANDIDATE PROFILE ===\n${fullCv}\n\n=== WRITING RULES ===\n- 280-380 words total\n- 3-4 paragraphs\n- Professional but conversational (not stiff or formal)\n- First paragraph: specific hook about ${company} - mention something recent or specific about them\n- Middle: 2 most relevant achievements with specific numbers\n- Closing: clear call to action\n\n=== HUMANIZATION RULES (CRITICAL) ===\n- Use contractions naturally (I'm, I've, don't, can't)\n- Vary sentence length DRAMATICALLY - mix 4-word sentences with 25-word sentences\n- Include ONE trade-off or difficult decision from past work\n- Write as if explaining to a peer over coffee\n- BANNED WORDS: delve, vibrant, testament, spearheaded, passionate, excited, dynamic, leverage, synergy, utilize, endeavor, thrilled, eager\n- DO NOT use: \"I am excited\", \"I am passionate\", \"perfect fit\", \"team player\", \"dynamic environment\"\n- Start with: Dear Hiring Manager,\n- End with: Sincerely, ${candidateName}\n\nOutput plain markdown only.`;\n\n// SWOT PROMPT (for DeepSeek R1 reasoning model)\nconst swotPrompt = `You are a career strategist for senior cybersecurity professionals.\n\nCreate a detailed SWOT analysis for ${candidateName} applying to:\nRole: ${title} at ${company}\nScore: ${score}/100\nMatched skills: ${matchedSkills}\nGaps: ${missingSkills}\nGreen flags: ${greenFlags}\nRed flags: ${redFlags}\n\n=== CANDIDATE PROFILE ===\n${fullCv}\n\nAnalyze this specific application and return valid JSON ONLY:\n{\n  \"strengths\": [{\"point\": \"...\", \"evidence\": \"...\", \"leverage\": \"how to emphasize this\"}],\n  \"weaknesses\": [{\"point\": \"...\", \"impact\": \"...\", \"mitigation\": \"how to address this\"}],\n  \"opportunities\": [{\"point\": \"...\", \"action\": \"specific action to take\"}],\n  \"threats\": [{\"point\": \"...\", \"mitigation\": \"how to counter this\"}],\n  \"top_improvements\": [\"improvement1\", \"improvement2\", \"improvement3\"],\n  \"interview_prep\": [\"tip1\", \"tip2\", \"tip3\"],\n  \"application_strategy\": \"2-3 sentence strategy for this specific application\"\n}`;\n\n// NEW: STUDY GUIDE PROMPT\nconst studyGuidePrompt = `You are a technical interview coach for senior cybersecurity professionals.\n\nCreate a comprehensive interview preparation study guide for ${candidateName} applying to:\nRole: ${title} at ${company}\nMatched skills: ${matchedSkills}\nGaps to address: ${missingSkills}\n\n=== CANDIDATE PROFILE ===\n${fullCv}\n\n=== JOB CONTEXT ===\n${cleanText.substring(0, 2000)}\n\nCreate a study guide with these sections:\n\n## 1. TECHNICAL TOPICS TO REVIEW\nList 5-7 specific technical topics they should brush up on, based on the job requirements and any gaps.\n\n## 2. LIKELY INTERVIEW QUESTIONS\nProvide 8-10 specific questions they might be asked, categorized as:\n- Technical (5-6 questions)\n- Behavioral/STAR (3-4 questions)\n\n## 3. YOUR TALKING POINTS\nFor each matched skill, provide a specific talking point with metrics from the candidate's experience.\n\n## 4. QUESTIONS TO ASK THEM\nSuggest 4-5 thoughtful questions the candidate should ask the interviewer.\n\n## 5. COMPANY RESEARCH CHECKLIST\nList 5 specific things to research about ${company} before the interview.\n\n## 6. 48-HOUR PREP PLAN\nA prioritized checklist of what to do in the 48 hours before the interview.\n\nOutput in clean markdown format.`;\n\nconst safeTitle = title.replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '_').substring(0, 30);\nconst safeCompany = company.replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '_').substring(0, 20);\nconst dateStr = new Date().toISOString().split('T')[0];\nconst folderName = `${dateStr}__${safeCompany}__${safeTitle}__Score${score}`;\nconst cvFilename = `CV_${candidateName.replace(/ /g, '_')}__${safeCompany}__${safeTitle}`;\nconst clFilename = `CoverLetter_${candidateName.replace(/ /g, '_')}__${safeCompany}__${safeTitle}`;\nconst studyFilename = `StudyGuide_${candidateName.replace(/ /g, '_')}__${safeCompany}__${safeTitle}`;\nconst swotFilename = `SWOT_${candidateName.replace(/ /g, '_')}__${safeCompany}__${safeTitle}`;\n\nreturn [{\n  json: {\n    ...jobRow,\n    clean_job_text: cleanText,\n    cv_prompt: cvPrompt,\n    cl_prompt: clPrompt,\n    swot_prompt: swotPrompt,\n    study_guide_prompt: studyGuidePrompt,\n    folder_name: folderName,\n    cv_filename: cvFilename,\n    cl_filename: clFilename,\n    study_filename: studyFilename,\n    swot_filename: swotFilename,\n    drive_root_folder_id: config.DRIVE_ROOT_FOLDER_ID,\n    cv_model: config.CV_MODEL,\n    cl_model: config.CL_MODEL,\n    swot_model: config.SWOT_MODEL,\n    study_model: config.STUDY_MODEL,\n    candidate_name: candidateName,\n    candidate_email: email,\n    candidate_linkedin: linkedin,\n    candidate_location: locationCandidate,\n    candidate_phone: phone\n  }\n}];"
+      },
+      "id": "90780ef8-7d48-4cd9-81fe-8820b86988fb",
+      "name": "P3: Prepare All AI Prompts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            },
+            {
+              "name": "X-Title",
+              "value": "Security Job Hunter"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": {{ JSON.stringify($json.cv_model) }},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert ATS-optimized cybersecurity resume writer. You produce professional, human-sounding CVs that score high on ATS systems. You never invent facts, certifications, or achievements. You output pure markdown.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.cv_prompt) }}\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 3500\n}",
+        "options": {
+          "timeout": 90000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "b96fac58-a9ee-4795-b464-e0752db608e5",
+      "name": "P3: OpenRouter Generate CV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1008,
+        240
+      ],
+      "notesInFlow": true,
+      "notes": "FULL PREMIUM: Claude Sonnet 4.5 (~$0.030/CV)",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            },
+            {
+              "name": "X-Title",
+              "value": "Security Job Hunter"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"anthropic/claude-3.5-haiku\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert ATS-optimized cybersecurity resume writer. You produce professional, human-sounding CVs that score high on ATS systems. You never invent facts, certifications, or achievements. You output pure markdown.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.cv_prompt) }}\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 3500\n}",
+        "options": {
+          "timeout": 90000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "ab112edf-b67d-43cb-a5af-41009f5108ee",
+      "name": "P3: CV - Quality First (Haiku)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        384,
+        800
+      ],
+      "notesInFlow": true,
+      "disabled": true,
+      "notes": "QUALITY-FIRST: Claude 3.5 Haiku (~$0.008/CV) - Enable this and disable Premium to save ~$0.022/CV",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            },
+            {
+              "name": "X-Title",
+              "value": "Security Job Hunter"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek/deepseek-chat\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert ATS-optimized cybersecurity resume writer. You produce professional, human-sounding CVs that score high on ATS systems. You never invent facts, certifications, or achievements. You output pure markdown.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.cv_prompt) }}\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 3500\n}",
+        "options": {
+          "timeout": 90000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "477b5a3a-5f93-4c0e-9be2-a2b0228ff059",
+      "name": "P3: CV - Hybrid Smart (DeepSeek)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        912,
+        800
+      ],
+      "notesInFlow": true,
+      "disabled": true,
+      "notes": "HYBRID SMART: DeepSeek V3 (~$0.002/CV) - Enable this and disable Premium to save ~$0.028/CV",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.cl_model) }},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a professional cover letter writer who creates compelling, human-sounding letters for senior cybersecurity professionals. You write naturally, avoiding AI-typical phrases. You never use filler phrases or cliches.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.cl_prompt) }}\n    }\n  ],\n  \"temperature\": 0.5,\n  \"max_tokens\": 1200\n}",
+        "options": {
+          "timeout": 90000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "40e2fca5-f7d8-402e-8c80-76e8e619ad26",
+      "name": "P3: OpenRouter Generate Cover Letter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1184,
+        240
+      ],
+      "notesInFlow": true,
+      "notes": "FULL PREMIUM: Claude Sonnet 4.5 (~$0.0135/CL)",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"anthropic/claude-3.5-haiku\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a professional cover letter writer who creates compelling, human-sounding letters for senior cybersecurity professionals. You write naturally, avoiding AI-typical phrases. You never use filler phrases or cliches.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.cl_prompt) }}\n    }\n  ],\n  \"temperature\": 0.5,\n  \"max_tokens\": 1200\n}",
+        "options": {
+          "timeout": 90000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "9edd5ff7-d2ad-4a6c-810d-2fe7ed5d7c64",
+      "name": "P3: CL - Quality First (Haiku)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        608,
+        800
+      ],
+      "notesInFlow": true,
+      "disabled": true,
+      "notes": "QUALITY-FIRST: Claude 3.5 Haiku (~$0.0032/CL) - Enable this and disable Premium to save ~$0.01/CL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek/deepseek-chat\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a professional cover letter writer who creates compelling, human-sounding letters for senior cybersecurity professionals. You write naturally, avoiding AI-typical phrases. You never use filler phrases or cliches.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.cl_prompt) }}\n    }\n  ],\n  \"temperature\": 0.5,\n  \"max_tokens\": 1200\n}",
+        "options": {
+          "timeout": 90000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "8a2261ea-05b2-495b-9a37-3257068c911e",
+      "name": "P3: CL - Hybrid Smart (DeepSeek)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1136,
+        800
+      ],
+      "notesInFlow": true,
+      "disabled": true,
+      "notes": "HYBRID SMART: DeepSeek V3 (~$0.002/CL) - Enable this and disable Premium to save ~$0.0115/CL",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.swot_model) }},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a career strategist specializing in cybersecurity. You provide detailed, actionable analysis. You output only valid JSON.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.swot_prompt) }}\n    }\n  ],\n  \"response_format\": { \"type\": \"json_object\" },\n  \"temperature\": 0.2,\n  \"max_tokens\": 4000\n}",
+        "options": {
+          "timeout": 120000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "34b773ab-cc11-420f-8c11-eda7d41ab4ed",
+      "name": "P3: OpenRouter Generate SWOT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1408,
+        240
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://n8n.io"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.study_model) }},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a technical interview coach for senior cybersecurity professionals. You create comprehensive, actionable study guides. You output clean markdown.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($('P3: Prepare All AI Prompts').first().json.study_guide_prompt) }}\n    }\n  ],\n  \"temperature\": 0.3,\n  \"max_tokens\": 3000\n}",
+        "options": {
+          "timeout": 120000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "ae1a4e94-7e3b-492f-919b-43f2df1c8a11",
+      "name": "P3: OpenRouter Generate Study Guide",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1632,
+        240
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "OpenRouter API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Robust assembler for the four AI generations.\n// Detects API failures (error bodies / empty choices) and unparseable SWOT JSON,\n// and routes those jobs to \"Needs Review\" instead of silently shipping bad docs.\nconst jobData = $('P3: Prepare All AI Prompts').first().json;\nconst cvResponse = $('P3: OpenRouter Generate CV').first().json;\nconst clResponse = $('P3: OpenRouter Generate Cover Letter').first().json;\nconst swotResponse = $('P3: OpenRouter Generate SWOT').first().json;\nconst studyResponse = $('P3: OpenRouter Generate Study Guide').first().json;\n\nfunction getContent(resp) {\n  return (resp && resp.choices && resp.choices[0] && resp.choices[0].message)\n    ? resp.choices[0].message.content : null;\n}\nfunction apiErr(resp) {\n  return (resp && resp.error && resp.error.message)\n    ? resp.error.message\n    : ((resp && resp.choices) ? null : 'No choices returned');\n}\nfunction extractJson(raw) {\n  if (raw == null) return null;\n  let s = String(raw)\n    .replace(/<think>[\\s\\S]*?<\\/think>/gi, ' ')\n    .replace(/```json/gi, ' ')\n    .replace(/```/g, ' ');\n  const a = s.indexOf('{');\n  const b = s.lastIndexOf('}');\n  if (a === -1 || b === -1 || b <= a) return null;\n  try { return JSON.parse(s.slice(a, b + 1)); } catch (e) { return null; }\n}\n\nconst cvText = getContent(cvResponse);\nconst clText = getContent(clResponse);\nconst studyText = getContent(studyResponse);\nconst sp = extractJson(getContent(swotResponse));\n\nconst failures = [];\nif (!cvText)    failures.push('CV: ' + (apiErr(cvResponse) || 'empty'));\nif (!clText)    failures.push('CoverLetter: ' + (apiErr(clResponse) || 'empty'));\nif (!studyText) failures.push('StudyGuide: ' + (apiErr(studyResponse) || 'empty'));\nif (!sp)        failures.push('SWOT: ' + (apiErr(swotResponse) || 'unparseable JSON'));\n\nconst generationOk = failures.length === 0;\nconst swot = sp || {};\n\nconst swotSummary = [\n  'STRENGTHS: ' + (swot.strengths || []).map(s => s.point || s).join(' | '),\n  'WEAKNESSES: ' + (swot.weaknesses || []).map(w => w.point || w).join(' | '),\n  'OPPORTUNITIES: ' + (swot.opportunities || []).map(o => o.point || o).join(' | '),\n  'THREATS: ' + (swot.threats || []).map(t => t.point || t).join(' | ')\n].join('\\n');\nconst improvements = (swot.top_improvements || []).join(' | ');\nconst interviewPrep = (swot.interview_prep || []).join(' | ');\n\nconst swotMarkdown = `# SWOT Analysis\n**Role:** ${jobData.title} at ${jobData.company}\n**Date:** ${new Date().toISOString().split('T')[0]}\n**Match Score:** ${jobData.score}/100\n\n## Strengths\n${(swot.strengths || []).map((s, i) => `${i+1}. **${s.point || s}**\\n   - Evidence: ${s.evidence || 'N/A'}\\n   - Leverage: ${s.leverage || 'N/A'}`).join('\\n\\n')}\n\n## Weaknesses\n${(swot.weaknesses || []).map((w, i) => `${i+1}. **${w.point || w}**\\n   - Impact: ${w.impact || 'N/A'}\\n   - Mitigation: ${w.mitigation || 'N/A'}`).join('\\n\\n')}\n\n## Opportunities\n${(swot.opportunities || []).map((o, i) => `${i+1}. **${o.point || o}**\\n   - Action: ${o.action || 'N/A'}`).join('\\n\\n')}\n\n## Threats\n${(swot.threats || []).map((t, i) => `${i+1}. **${t.point || t}**\\n   - Mitigation: ${t.mitigation || 'N/A'}`).join('\\n\\n')}\n\n## Top Improvements\n${(swot.top_improvements || []).map((imp, i) => `${i+1}. ${imp}`).join('\\n')}\n\n## Interview Prep Tips\n${(swot.interview_prep || []).map((tip, i) => `${i+1}. ${tip}`).join('\\n')}\n\n## Application Strategy\n${swot.application_strategy || 'No strategy provided'}\n`;\n\nreturn [{\n  json: {\n    ...jobData,\n    cv_markdown: cvText || ('CV generation failed: ' + (apiErr(cvResponse) || 'empty')),\n    cover_letter_markdown: clText || ('Cover letter generation failed: ' + (apiErr(clResponse) || 'empty')),\n    study_guide_markdown: studyText || ('Study guide generation failed: ' + (apiErr(studyResponse) || 'empty')),\n    swot_markdown: swotMarkdown,\n    swot_json: JSON.stringify(swot),\n    swot_summary: swotSummary,\n    top_improvements: improvements,\n    interview_prep_tips: interviewPrep,\n    application_strategy: swot.application_strategy || '',\n    generation_ok: generationOk,\n    generation_failures: failures.join(' || '),\n    status: generationOk ? 'Docs Generated' : 'Needs Review'\n  }\n}];\n"
+      },
+      "id": "c25c8dfa-5102-4d62-8247-e98704eca770",
+      "name": "P3: Parse & Assemble Documents",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        240
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.folder_name }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "YOUR_APPLICATIONS_FOLDER_ID",
+          "mode": "list",
+          "cachedResultName": "Applications",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/YOUR_APPLICATIONS_FOLDER_ID"
+        },
+        "options": {}
+      },
+      "id": "4a01697b-aa2e-4ed3-ab5b-a212b92a0213",
+      "name": "P3: Create Job Folder in Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2080,
+        240
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare all documents as binary data for upload\nconst cvMarkdown = $('P3: Parse & Assemble Documents').first().json.cv_markdown;\nconst clMarkdown = $('P3: Parse & Assemble Documents').first().json.cover_letter_markdown;\nconst studyMarkdown = $('P3: Parse & Assemble Documents').first().json.study_guide_markdown;\nconst swotMarkdown = $('P3: Parse & Assemble Documents').first().json.swot_markdown;\nconst folderId = $('P3: Create Job Folder in Drive').first().json.id;\nconst cvFilename = $('P3: Parse & Assemble Documents').first().json.cv_filename;\nconst clFilename = $('P3: Parse & Assemble Documents').first().json.cl_filename;\nconst studyFilename = $('P3: Parse & Assemble Documents').first().json.study_filename;\nconst swotFilename = $('P3: Parse & Assemble Documents').first().json.swot_filename;\nconst allData = $('P3: Parse & Assemble Documents').first().json;\n\n// Convert markdown to Buffer for binary upload\nconst cvBuffer = Buffer.from(cvMarkdown, 'utf-8');\nconst clBuffer = Buffer.from(clMarkdown, 'utf-8');\nconst studyBuffer = Buffer.from(studyMarkdown, 'utf-8');\nconst swotBuffer = Buffer.from(swotMarkdown, 'utf-8');\n\nreturn [{\n  json: {\n    ...allData,\n    folder_id: folderId,\n    cv_filename_full: cvFilename + '.md',\n    cl_filename_full: clFilename + '.md',\n    study_filename_full: studyFilename + '.md',\n    swot_filename_full: swotFilename + '.md'\n  },\n  binary: {\n    cv_data: {\n      data: cvBuffer.toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: cvFilename + '.md',\n      fileExtension: 'md'\n    },\n    cl_data: {\n      data: clBuffer.toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: clFilename + '.md',\n      fileExtension: 'md'\n    },\n    study_data: {\n      data: studyBuffer.toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: studyFilename + '.md',\n      fileExtension: 'md'\n    },\n    swot_data: {\n      data: swotBuffer.toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: swotFilename + '.md',\n      fileExtension: 'md'\n    }\n  }\n}];"
+      },
+      "id": "91f47305-52fd-4ca4-a341-cc2bf0da1921",
+      "name": "P3: Prepare All File Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "cv_data",
+        "name": "={{ $json.cv_filename_full }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.folder_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "caeda4bd-b96e-4433-b11f-104af8463135",
+      "name": "P3: Upload CV as Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2528,
+        32
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "cl_data",
+        "name": "={{ $('P3: Prepare All File Data').first().json.cl_filename_full }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('P3: Prepare All File Data').first().json.folder_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "ec0f1c49-b0cd-452a-8492-fb9ef8cf32d9",
+      "name": "P3: Upload Cover Letter as Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2528,
+        208
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "study_data",
+        "name": "={{ $('P3: Prepare All File Data').first().json.study_filename_full }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('P3: Prepare All File Data').first().json.folder_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "d2ac7ca0-966e-4bc5-964c-dea348b3270a",
+      "name": "P3: Upload Study Guide as Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2544,
+        432
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "swot_data",
+        "name": "={{ $json.swot_filename_full }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.folder_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "379a4326-c0f4-4d92-abd0-2763f1dba5ac",
+      "name": "P3: Upload SWOT as Google Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2544,
+        608
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect all upload results\nconst cvUpload = $('P3: Upload CV as Google Doc').first().json;\nconst clUpload = $('P3: Upload Cover Letter as Google Doc').first().json;\nconst studyUpload = $('P3: Upload Study Guide as Google Doc').first().json;\nconst swotUpload = $('P3: Upload SWOT as Google Doc').first().json;\nconst allData = $('P3: Prepare All File Data').first().json;\n\nreturn [{\n  json: {\n    ...allData,\n    cv_link: cvUpload.webViewLink || '',\n    cv_id: cvUpload.id || '',\n    cl_link: clUpload.webViewLink || '',\n    cl_id: clUpload.id || '',\n    study_link: studyUpload.webViewLink || '',\n    study_id: studyUpload.id || '',\n    swot_link: swotUpload.webViewLink || '',\n    swot_id: swotUpload.id || ''\n  }\n}];"
+      },
+      "id": "548f45b7-166b-4940-a2c0-01b56d17eadd",
+      "name": "P3: Merge Upload Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3024,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P3: Set Job ID').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.job_id }}",
+            "status": "={{ $json.status || 'Docs Generated' }}",
+            "cv_link": "={{ $json.cv_link }}",
+            "cover_letter_link": "={{ $json.cl_link }}",
+            "study_guide_link": "={{ $json.study_link }}",
+            "swot_strengths": "={{ $json.swot_summary.substring(0, 500) }}",
+            "improvement_notes": "={{ $json.top_improvements }}",
+            "interview_prep": "={{ $json.interview_prep_tips }}",
+            "row_number": 0
+          },
+          "matchingColumns": [
+            "job_id"
+          ],
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_type",
+              "displayName": "remote_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted_date",
+              "displayName": "posted_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "listing_age_days",
+              "displayName": "listing_age_days",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "job_url",
+              "displayName": "job_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "apply_url",
+              "displayName": "apply_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "search_keyword",
+              "displayName": "search_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "dedup_key",
+              "displayName": "dedup_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recommendation",
+              "displayName": "recommendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "callback_likelihood",
+              "displayName": "callback_likelihood",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "salary_range",
+              "displayName": "salary_range",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_sector",
+              "displayName": "company_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_summary",
+              "displayName": "company_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "matched_skills",
+              "displayName": "matched_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "missing_skills",
+              "displayName": "missing_skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "green_flags",
+              "displayName": "green_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "red_flags",
+              "displayName": "red_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_strengths",
+              "displayName": "swot_strengths",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "swot_weaknesses",
+              "displayName": "swot_weaknesses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_opportunities",
+              "displayName": "swot_opportunities",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "swot_threats",
+              "displayName": "swot_threats",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "improvement_notes",
+              "displayName": "improvement_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "interview_prep",
+              "displayName": "interview_prep",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ai_summary",
+              "displayName": "ai_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cv_link",
+              "displayName": "cv_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cover_letter_link",
+              "displayName": "cover_letter_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "study_guide_link",
+              "displayName": "study_guide_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date_found",
+              "displayName": "date_found",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "applied_date",
+              "displayName": "applied_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "8fc5a0c8-88dc-482d-b057-2a6735dcbb58",
+      "name": "P3: Update Sheet with Doc Links",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        3248,
+        240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2816,
+        208
+      ],
+      "id": "fb7b0bd1-e2db-4a55-ad57-d972a3690178",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "content": "# 📡 RoleRadar",
+        "height": 90,
+        "width": 260,
+        "color": 6
+      },
+      "id": "ae8819c0-001b-4edd-bd85-8e42edef199b",
+      "name": "RoleRadar Brand",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -398
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "P3: Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "P3: Set Job ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Set Job ID": {
+      "main": [
+        [
+          {
+            "node": "P3: Load Jobs From Shortlist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Load Jobs From Shortlist": {
+      "main": [
+        [
+          {
+            "node": "P3: Filter Strong Recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Filter Strong Recommendations": {
+      "main": [
+        [
+          {
+            "node": "P3: Loop Through Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Loop Through Jobs": {
+      "main": [
+        [],
+        [
+          {
+            "node": "P3: Fetch Full Job Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Fetch Full Job Description": {
+      "main": [
+        [
+          {
+            "node": "P3: Prepare All AI Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P3: Loop Through Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Prepare All AI Prompts": {
+      "main": [
+        [
+          {
+            "node": "P3: OpenRouter Generate CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: OpenRouter Generate CV": {
+      "main": [
+        [
+          {
+            "node": "P3: OpenRouter Generate Cover Letter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: OpenRouter Generate Cover Letter": {
+      "main": [
+        [
+          {
+            "node": "P3: OpenRouter Generate SWOT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: OpenRouter Generate SWOT": {
+      "main": [
+        [
+          {
+            "node": "P3: OpenRouter Generate Study Guide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: OpenRouter Generate Study Guide": {
+      "main": [
+        [
+          {
+            "node": "P3: Parse & Assemble Documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Parse & Assemble Documents": {
+      "main": [
+        [
+          {
+            "node": "P3: Create Job Folder in Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Create Job Folder in Drive": {
+      "main": [
+        [
+          {
+            "node": "P3: Prepare All File Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Prepare All File Data": {
+      "main": [
+        [
+          {
+            "node": "P3: Upload CV as Google Doc",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "P3: Upload Cover Letter as Google Doc",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "P3: Upload Study Guide as Google Doc",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "P3: Upload SWOT as Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Upload CV as Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Upload Cover Letter as Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "P3: Upload Study Guide as Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "P3: Upload SWOT as Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "P3: Merge Upload Results": {
+      "main": [
+        [
+          {
+            "node": "P3: Update Sheet with Doc Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P3: Update Sheet with Doc Links": {
+      "main": [
+        [
+          {
+            "node": "P3: Loop Through Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "P3: Merge Upload Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "",
+  "meta": {},
+  "id": "",
+  "tags": []
+}

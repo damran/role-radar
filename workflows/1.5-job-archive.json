@@ -1,0 +1,794 @@
+{
+  "name": "RoleRadar · 1.5 · Archive",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 📡 RoleRadar — Phase 1.5 · Archive\n\nFetches full job descriptions, converts them to Markdown, and archives them to Google Drive for later reference.\n\n**In:** `Jobs` tab  •  **Out:** Drive `_archive` + `Archieve` tab\n**Optional** — run any time after Phase 1.\n\n— github.com/damran/role-radar",
+        "height": 812,
+        "width": 4144,
+        "color": 6
+      },
+      "id": "5efcdaef-4b48-482e-8321-8605ef33c087",
+      "name": "RoleRadar Frame",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2624,
+        -224
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9ff19a14-c6c6-4a83-9c5e-46a82d8bb1ae",
+      "name": "P1.5: Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2464,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "GOOGLE_SHEET_ID",
+              "stringValue": "YOUR_GOOGLE_SHEET_ID"
+            },
+            {
+              "name": "DRIVE_ROOT_FOLDER_ID",
+              "stringValue": "YOUR_DRIVE_ROOT_FOLDER_ID"
+            },
+            {
+              "name": "ARCHIVE_FOLDER_NAME",
+              "stringValue": "_archive"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "95b7f4d7-9735-4078-b867-6797ff530b98",
+      "name": "P1.5: Load Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -2240,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Jobs",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "7068fd1d-f4a9-45ca-bd22-11e00cfd1873",
+      "name": "P1.5: Read Jobs Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -2016,
+        96
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P1.5: Load Config').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Archieve",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "cd2a3203-73a4-4113-8472-65da21f93b9a",
+      "name": "P1.5: Read Archive Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -2016,
+        288
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter out jobs that are already archived\nconst jobs = $('P1.5: Read Jobs Sheet').all();\nconst archived = $('P1.5: Read Archive Sheet').all();\n\n// Build a Set of archived job_ids for fast lookup\nconst archivedIds = new Set();\narchived.forEach(row => {\n  if (row.json.job_id) {\n    archivedIds.add(String(row.json.job_id).trim());\n  }\n});\n\n// Filter jobs not yet archived\nconst unarchived = jobs.filter(job => {\n  const jobId = String(job.json.job_id || '').trim();\n  return jobId && !archivedIds.has(jobId);\n});\n\nif (unarchived.length === 0) {\n  return [{ json: { message: 'No new jobs to archive', count: 0 } }];\n}\n\nreturn unarchived;"
+      },
+      "id": "3cf7d6a3-3c62-4753-af30-9a81e81f7fbb",
+      "name": "P1.5: Filter Unarchived Jobs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1568,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "has-jobs-check",
+              "leftValue": "={{ $json.job_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3c7e02a7-1efd-4b84-9438-5aa767f752a2",
+      "name": "P1.5: Has Jobs to Archive?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "66d81882-cdcd-4c30-ac36-6897972dae35",
+      "name": "P1.5: Loop Through Jobs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1120,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.job_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 20000
+        }
+      },
+      "id": "06a8a918-4bdd-4bd9-ba1d-ef44f8aea9a5",
+      "name": "P1.5: Fetch LinkedIn Job Description",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -928,
+        112
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "amount": 8,
+        "unit": "seconds"
+      },
+      "id": "1992f641-455b-414c-9d8b-bf58c40640f0",
+      "name": "P1.5: Delay After Fetch",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        128
+      ],
+      "webhookId": "archive-delay-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data || '';\nconst jobData = $('P1.5: Loop Through Jobs').first().json;\n\n// Clean LinkedIn HTML and convert to Markdown\nlet text = html\n  .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')\n  .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')\n  .replace(/<br\\s*\\/?>/gi, '\\n')\n  .replace(/<li[^>]*>/gi, '\\n• ')\n  .replace(/<\\/li>/gi, '')\n  .replace(/<h[1-6][^>]*>/gi, '\\n## ')\n  .replace(/<\\/h[1-6]>/gi, '\\n')\n  .replace(/<p[^>]*>/gi, '\\n')\n  .replace(/<\\/p>/gi, '\\n')\n  .replace(/<div[^>]*>/gi, '\\n')\n  .replace(/<\\/div>/gi, '')\n  .replace(/<section[^>]*>/gi, '\\n')\n  .replace(/<\\/section>/gi, '')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/&nbsp;/g, ' ')\n  .replace(/&amp;/g, '&')\n  .replace(/&lt;/g, '<')\n  .replace(/&gt;/g, '>')\n  .replace(/&quot;/g, '\"')\n  // Remove LinkedIn UI junk\n  .replace(/Sign in to access AI-powered advices|Sign in to evaluate your skills/gi, '')\n  .replace(/Email or phone|Password|Forgot password|Join now/gi, '')\n  .replace(/By clicking Continue to join or sign in, you agree to LinkedIn's User Agreement/gi, '')\n  .replace(/Similar jobs[\\s\\S]*?Show (more|fewer) jobs/gi, '')\n  .replace(/People also viewed[\\s\\S]*$/gi, '')\n  .replace(/Referrals increase your chances/gi, '')\n  .replace(/Get notified when a new job is posted/gi, '')\n  .replace(/LinkedIn © \\d{4}/gi, '')\n  .replace(/Show more|Show less/gi, '')\n  .replace(/\\d+ applicants/gi, '')\n  .replace(/See who .* has hired for this role/gi, '')\n  .replace(/Set alert for similar jobs/gi, '')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// Build Markdown document\nconst archiveDate = new Date().toISOString().split('T')[0];\nconst markdownContent = `# ${jobData.title || 'Untitled'}\n\n**Company:** ${jobData.company || 'Unknown'}\n**Location:** ${jobData.location || 'Unknown'}\n**Posted:** ${jobData.posted_date || 'Unknown'}\n**Source:** ${jobData.source || 'LinkedIn'}\n**URL:** ${jobData.job_url || ''}\n**Archived:** ${archiveDate}\n\n---\n\n## Job Description\n\n${text}\n\n---\n\n## Metadata\n\n- Job ID: ${jobData.job_id || ''}\n- Search Keyword: ${jobData.search_keyword || 'N/A'}\n- Score: ${jobData.score || 'Not scored'}\n- Status: ${jobData.status || 'Unknown'}\n- Dedup Key: ${jobData.dedup_key || 'N/A'}\n`;\n\n// Create safe filename\nconst safeTitle = (jobData.title || 'job').replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '_').substring(0, 40);\nconst safeCompany = (jobData.company || 'company').replace(/[^a-zA-Z0-9\\s]/g, '').replace(/\\s+/g, '_').substring(0, 25);\nconst jobIdShort = (jobData.job_id || '').replace('li_', '');\nconst filename = `${archiveDate}__${safeCompany}__${safeTitle}__${jobIdShort}.md`;\n\nreturn [{\n  json: {\n    ...jobData,\n    markdown_content: markdownContent,\n    filename: filename,\n    archived_date: archiveDate\n  }\n}];"
+      },
+      "id": "de0ba087-e7ec-45b1-be39-70e3b092279b",
+      "name": "P1.5: Convert HTML to Markdown",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {},
+        "options": {}
+      },
+      "id": "52170a29-b0bf-4ba9-9179-2ba33abb0e4a",
+      "name": "P1.5: Search for Archive Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        128
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "folder-exists-check",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2178102b-c6a3-41ff-9bb0-7beb9a8197b4",
+      "name": "P1.5: Archive Folder Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        0,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $('P1.5: Convert HTML to Markdown').item.json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "YOUR_ARCHIVE_FOLDER_ID",
+          "mode": "list",
+          "cachedResultName": "_Archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/YOUR_ARCHIVE_FOLDER_ID"
+        },
+        "options": {}
+      },
+      "id": "d63ab06b-db9f-4696-a094-c9bc941023df",
+      "name": "P1.5: Create Archive Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get folder ID from either search result or newly created folder\nconst searchResult = $('P1.5: Archive Folder Exists?').first();\nlet folderId = null;\n\nif (searchResult.json.id) {\n  // Folder exists, use it\n  folderId = searchResult.json.id;\n} else {\n  // Folder was just created\n  const createResult = $('P1.5: Create Archive Folder').first();\n  folderId = createResult.json.id;\n}\n\nconst jobData = $('P1.5: Convert HTML to Markdown').first().json;\n\n// Convert markdown content to binary format for Google Drive upload\nconst markdownBuffer = Buffer.from(jobData.markdown_content, 'utf-8');\n\nreturn [{\n  json: {\n    ...jobData,\n    archive_folder_id: folderId\n  },\n  binary: {\n    data: {\n      data: markdownBuffer.toString('base64'),\n      mimeType: 'text/markdown',\n      fileName: jobData.filename,\n      fileExtension: 'md'\n    }\n  }\n}];"
+      },
+      "id": "13821283-4411-43ff-a38e-8cceb6261385",
+      "name": "P1.5: Merge Folder ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "YOUR_ARCHIVE_FOLDER_ID",
+          "mode": "list",
+          "cachedResultName": "_Archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/YOUR_ARCHIVE_FOLDER_ID"
+        },
+        "options": {}
+      },
+      "id": "5d64013c-4425-4086-997e-9a0d91c77dea",
+      "name": "P1.5: Upload Markdown File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        128
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const uploadResult = $input.first().json;\nconst jobData = $('P1.5: Merge Folder ID').first().json;\n\nreturn [{\n  json: {\n    job_id: jobData.job_id,\n    title: jobData.title,\n    company: jobData.company,\n    location: jobData.location,\n    posted_date: jobData.posted_date,\n    archived_date: jobData.archived_date,\n    drive_link: uploadResult.webViewLink || uploadResult.webContentLink || '',\n    job_url: jobData.job_url,\n    score: jobData.score || '',\n    status: jobData.status || ''\n  }\n}];"
+      },
+      "id": "33e37f06-7f7d-41ea-818a-58374aff3318",
+      "name": "P1.5: Prepare Sheet Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('P1.5: Load Config').first().json.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2100684358,
+          "mode": "list",
+          "cachedResultName": "Archive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=2100684358"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "job_id"
+          ],
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "posted_date",
+              "displayName": "posted_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "archived_date",
+              "displayName": "archived_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "drive_link",
+              "displayName": "drive_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "job_url",
+              "displayName": "job_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "locationDefine": {
+            "values": {}
+          }
+        }
+      },
+      "id": "f8a2ddee-ebcd-429e-961d-5358cad756a8",
+      "name": "P1.5: Upsert to Archive Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1120,
+        192
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1792,
+        192
+      ],
+      "id": "20308e2c-e0ca-492c-b73c-c13dc881d7cf",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "content": "# 📡 RoleRadar",
+        "height": 90,
+        "width": 260,
+        "color": 7
+      },
+      "id": "c806987a-64cd-4682-aae0-6821d105a812",
+      "name": "RoleRadar Brand",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2624,
+        -334
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "P1.5: Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Load Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Load Config": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Read Jobs Sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "P1.5: Read Archive Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Read Jobs Sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Read Archive Sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "P1.5: Filter Unarchived Jobs": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Has Jobs to Archive?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Has Jobs to Archive?": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Loop Through Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Loop Through Jobs": {
+      "main": [
+        [],
+        [
+          {
+            "node": "P1.5: Fetch LinkedIn Job Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Fetch LinkedIn Job Description": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Delay After Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P1.5: Loop Through Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Delay After Fetch": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Convert HTML to Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Convert HTML to Markdown": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Search for Archive Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Search for Archive Folder": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Archive Folder Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Archive Folder Exists?": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Merge Folder ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "P1.5: Create Archive Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Create Archive Folder": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Merge Folder ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Merge Folder ID": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Upload Markdown File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Upload Markdown File": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Prepare Sheet Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Prepare Sheet Update": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Upsert to Archive Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "P1.5: Upsert to Archive Sheet": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Loop Through Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "P1.5: Filter Unarchived Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "",
+  "meta": {},
+  "id": "",
+  "tags": []
+}
