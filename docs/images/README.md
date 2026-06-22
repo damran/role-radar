@@ -1,14 +1,19 @@
 # Images
 
-`hero.svg` is the README banner (renders out of the box).
+Diagrams that ship with the repo (plain-language, render out of the box):
 
-To make the repo even more attractive, add real screenshots here and reference them from the main `README.md`:
+- `hero.svg` — the README banner.
+- `how-it-works.svg` — the 3-step "what happens" diagram (used in the README).
+- `credential-setup.svg` — "where to paste your OpenRouter key" (used in SETUP step 3).
+- `sheet-tabs.svg` — the Google Sheet's four tabs and the Filter example (used in SETUP step 1).
 
-- `phase1-canvas.png` — the Phase 1 workflow canvas in n8n
-- `phase2-canvas.png` — Phase 2 scoring flow
-- `phase3-canvas.png` — Phase 3 document generation
+## Optional: add real screenshots later
+
+Real screenshots make the repo even more convincing. Suggested additions, referenced from `README.md`:
+
+- `phase1-canvas.png` … `phase3-canvas.png` — the workflow canvases in n8n
 - `sheet-example.png` — the `Jobs` tab populated with scored jobs
-- `demo.gif` — a short screen recording of a full run (great for the top of the README)
+- `demo.gif` — a short screen recording of a full run (great at the top of the README)
 
-**Tip:** in n8n, use the canvas "download as image" / a clean screenshot at ~1600px wide. Blur or use the
-fictional sample data — never show real keys, your real Sheet ID, or personal data in screenshots.
+**Tip:** capture at ~1600px wide. Always use the fictional **Alex Mercer** sample data — never show real keys,
+your real Sheet ID, or personal data in screenshots.

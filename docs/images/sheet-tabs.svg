@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="470" viewBox="0 0 940 470" role="img" aria-label="Your Google Sheet has four tabs">
+  <defs>
+    <style>
+      .t { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .h { font-size: 24px; font-weight: 800; fill: #11162a; }
+      .tab { font-size: 16px; font-weight: 800; fill: #11162a; }
+      .tabq { font-size: 16px; font-weight: 800; fill: #ffffff; }
+      .note { font-size: 15px; font-weight: 500; fill: #3a4361; }
+      .cell { font-size: 14px; font-weight: 600; fill: #28304a; }
+      .hd { font-size: 13px; font-weight: 800; fill: #5b647e; letter-spacing: 0.5px; }
+      .foot { font-size: 14px; font-weight: 500; fill: #6b7390; }
+    </style>
+  </defs>
+
+  <rect width="940" height="470" rx="18" fill="#f4f6fb"/>
+  <rect x="0" y="0" width="940" height="6" fill="#10b981"/>
+  <text x="40" y="56" class="t h">🗒️ Your Google Sheet: 4 tabs</text>
+
+  <!-- spreadsheet frame -->
+  <rect x="40" y="84" width="860" height="250" rx="12" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+
+  <!-- tab bar -->
+  <g>
+    <rect x="40" y="84" width="150" height="40" rx="8" fill="#10b981"/>
+    <text x="78" y="110" class="t tabq">Filter</text>
+    <rect x="196" y="92" width="120" height="32" rx="8" fill="#eef1f8"/>
+    <text x="224" y="113" class="t tab">Jobs</text>
+    <rect x="322" y="92" width="140" height="32" rx="8" fill="#eef1f8"/>
+    <text x="346" y="113" class="t tab">Shortlist</text>
+    <rect x="468" y="92" width="140" height="32" rx="8" fill="#eef1f8"/>
+    <text x="492" y="113" class="t tab">Archieve</text>
+  </g>
+
+  <!-- mini Filter table -->
+  <text x="62" y="156" class="t" font-size="15" font-weight="700" fill="#11162a">The <tspan fill="#10b981">Filter</tspan> tab is where YOU type your searches — one row each:</text>
+  <g>
+    <rect x="62" y="172" width="240" height="34" fill="#f4f7fc" stroke="#e2e7f1"/>
+    <rect x="302" y="172" width="180" height="34" fill="#f4f7fc" stroke="#e2e7f1"/>
+    <rect x="482" y="172" width="160" height="34" fill="#f4f7fc" stroke="#e2e7f1"/>
+    <rect x="642" y="172" width="216" height="34" fill="#f4f7fc" stroke="#e2e7f1"/>
+    <text x="74" y="194" class="t hd">KEYWORD</text>
+    <text x="314" y="194" class="t hd">LOCATION</text>
+    <text x="494" y="194" class="t hd">REMOTE</text>
+    <text x="654" y="194" class="t hd">EXPERIENCE LEVEL</text>
+
+    <rect x="62" y="206" width="240" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <rect x="302" y="206" width="180" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <rect x="482" y="206" width="160" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <rect x="642" y="206" width="216" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <text x="74" y="230" class="t cell">Detection Engineer</text>
+    <text x="314" y="230" class="t cell">Berlin</text>
+    <text x="494" y="230" class="t cell">Remote</text>
+    <text x="654" y="230" class="t cell">Mid-Senior level</text>
+
+    <rect x="62" y="242" width="240" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <rect x="302" y="242" width="180" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <rect x="482" y="242" width="160" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <rect x="642" y="242" width="216" height="36" fill="#ffffff" stroke="#e2e7f1"/>
+    <text x="74" y="266" class="t cell">SOC Analyst</text>
+    <text x="314" y="266" class="t cell">Germany</text>
+    <text x="494" y="266" class="t cell">Hybrid</text>
+    <text x="654" y="266" class="t cell">Associate</text>
+  </g>
+  <text x="62" y="306" class="t note">The other 3 tabs fill in automatically as RoleRadar runs — you don't type in them.</text>
+
+  <!-- legend -->
+  <g>
+    <text x="40" y="372" class="t note"><tspan font-weight="800" fill="#10b981">Filter</tspan> — your searches (you fill this in)</text>
+    <text x="40" y="398" class="t note"><tspan font-weight="800">Jobs</tspan> — every job + all AI results land here</text>
+    <text x="500" y="372" class="t note"><tspan font-weight="800">Shortlist</tspan> — the strong matches Phase 3 uses</text>
+    <text x="500" y="398" class="t note"><tspan font-weight="800">Archieve</tspan> — saved copies of job descriptions</text>
+  </g>
+
+  <text x="40" y="442" class="t foot">Tip: copy the exact column headers from sheet-template/columns.csv into the Jobs tab.</text>
+</svg>

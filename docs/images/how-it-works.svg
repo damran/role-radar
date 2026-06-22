@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="380" viewBox="0 0 1000 380" role="img" aria-label="How RoleRadar works in plain English">
+  <defs>
+    <style>
+      .t { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .h { font-size: 24px; font-weight: 800; fill: #11162a; }
+      .ct { font-size: 19px; font-weight: 800; fill: #11162a; }
+      .cd { font-size: 15px; font-weight: 500; fill: #3a4361; }
+      .step { font-size: 13px; font-weight: 800; fill: #6b7390; letter-spacing: 1px; }
+      .foot { font-size: 16px; font-weight: 600; fill: #28304a; }
+    </style>
+  </defs>
+
+  <rect width="1000" height="380" rx="18" fill="#f4f6fb"/>
+  <rect x="0" y="0" width="1000" height="6" fill="#06b6d4"/>
+  <text x="40" y="56" class="t h">How RoleRadar works (in plain English)</text>
+
+  <!-- Card 1 -->
+  <g>
+    <rect x="40" y="86" width="280" height="190" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="40" y="86" width="280" height="8" rx="4" fill="#06b6d4"/>
+    <text x="64" y="132" class="t step">STEP 1</text>
+    <text x="64" y="162" class="t ct">📡 Discover</text>
+    <text x="64" y="196" class="t cd">Finds new jobs on LinkedIn</text>
+    <text x="64" y="218" class="t cd">and lists them in your</text>
+    <text x="64" y="240" class="t cd">Google Sheet.</text>
+  </g>
+  <text x="332" y="190" class="t" font-size="30" fill="#9aa3bd">&#8594;</text>
+
+  <!-- Card 2 -->
+  <g>
+    <rect x="360" y="86" width="280" height="190" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="360" y="86" width="280" height="8" rx="4" fill="#7c3aed"/>
+    <text x="384" y="132" class="t step">STEP 2</text>
+    <text x="384" y="162" class="t ct">📊 Score</text>
+    <text x="384" y="196" class="t cd">AI reads each job and</text>
+    <text x="384" y="218" class="t cd">rates the fit 0&#8211;100</text>
+    <text x="384" y="240" class="t cd">against your profile.</text>
+  </g>
+  <text x="652" y="190" class="t" font-size="30" fill="#9aa3bd">&#8594;</text>
+
+  <!-- Card 3 -->
+  <g>
+    <rect x="680" y="86" width="280" height="190" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="680" y="86" width="280" height="8" rx="4" fill="#10b981"/>
+    <text x="704" y="132" class="t step">STEP 3</text>
+    <text x="704" y="162" class="t ct">📄 Generate</text>
+    <text x="704" y="196" class="t cd">For the best matches, writes</text>
+    <text x="704" y="218" class="t cd">a tailored CV, cover letter,</text>
+    <text x="704" y="240" class="t cd">SWOT &amp; study guide.</text>
+  </g>
+
+  <rect x="40" y="300" width="920" height="48" rx="12" fill="#eaf6f9" stroke="#bfe6ee" stroke-width="2"/>
+  <text x="64" y="330" class="t foot">✅ You just press <tspan font-weight="800">Run</tspan>. Everything lands in your Google Sheet, with the documents saved to Google Drive.</text>
+</svg>

@@ -32,6 +32,8 @@ Create one Google Sheet with **four tabs**. Exact columns are in
 
 Copy the Sheet's ID from its URL (`https://docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`).
 
+![Your Google Sheet has four tabs; you only type in the Filter tab](images/sheet-tabs.svg)
+
 ## 2. Create the Drive folders
 
 In Google Drive create two folders and copy each folder's ID from its URL:
@@ -51,6 +53,8 @@ Create these once; every workflow references them by name.
 
 > 🔐 The OpenRouter key lives **only** in this credential — never in a node. That's why the workflow files in
 > this repo are safe to share.
+
+![Where to paste your OpenRouter key: Name = Authorization, Value = Bearer your-key, then Save](images/credential-setup.svg)
 
 ## 4. Import the workflows
 

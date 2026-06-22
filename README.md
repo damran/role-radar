@@ -54,6 +54,11 @@ further and is built to actually survive daily use:
 
 ## 🧭 How it works
 
+![How RoleRadar works — Discover, Score, Generate](docs/images/how-it-works.svg)
+
+<details>
+<summary><b>See the detailed pipeline diagram</b></summary>
+
 ```mermaid
 flowchart LR
   subgraph Sheet["🗒️ Google Sheet (single source of truth)"]
@@ -72,6 +77,8 @@ flowchart LR
   JOBS -.optional.-> P15["**1.5 · Archive**<br/>JD → Markdown"]
   P15 --> DRIVE
 ```
+
+</details>
 
 | Phase | Workflow file | What it does |
 |------:|---------------|--------------|
