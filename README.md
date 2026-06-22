@@ -72,15 +72,16 @@ person wrote it, not an AI (no robotic clichés, no invented numbers, no em-dash
 
 > Dear Hiring Manager,
 >
-> Nimbus's move to detection-as-code is exactly the problem I spent the last four years on at a Berlin scale-up.
-> We ran security monitoring across AWS, Azure and GCP, and I rebuilt our alerting so every rule lived in Git
-> with peer review and rollback, not in someone's console. The hardest part wasn't technical. It was convincing
-> engineers that security automation deserves the same testing as the product itself.
+> The line in your job post about "making a technical product feel obvious to a non-technical buyer" is the part
+> of the work I enjoy most. At my current company I rebuilt our positioning from the feature list up, then carried
+> that same language into the website, the sales deck and the onboarding emails so the story stayed consistent
+> wherever a buyer met it. The hardest part wasn't the writing. It was getting product, sales and marketing to
+> agree on one message and stick to it.
 >
 > *(…)*
 >
 > Sincerely,
-> Alex Mercer
+> Jordan Avery
 
 *Generated from the bundled fictional sample profile. Your real profile produces your real letter.*
 </details>
@@ -89,7 +90,7 @@ person wrote it, not an AI (no robotic clichés, no invented numbers, no em-dash
 
 RoleRadar isn't just for tech. The scoring and the documents adapt to **whatever profile you give it**, so an
 architect, a lawyer and a chef all get a fair score and a CV in their own field. The bundled example is a
-security engineer — swap in your own details in one config box and you're set.
+**product marketing manager** — swap in your own details in one config box and you're set.
 
 ➡️ **[Ready-to-adapt example profiles](docs/EXAMPLE_PROFILES.md)** for a lawyer, chef, designer and nurse.
 

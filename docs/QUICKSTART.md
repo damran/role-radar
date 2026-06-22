@@ -35,7 +35,7 @@ takes about 30 focused minutes. After that, running it is just pressing **Run**.
 
 4. **🟢 Tell it about you**
    Open the first box (`Set` / `Load Config`) in each workflow and paste your Google Sheet ID, your folder IDs,
-   and **your own profile and skills** (replace the sample "Alex Mercer"). Add your job searches to the `Filter`
+   and **your own profile and skills** (replace the sample "Jordan Avery"). Add your job searches to the `Filter`
    tab. Not in tech? See [example profiles](EXAMPLE_PROFILES.md) for a lawyer, chef, designer or nurse.
 
 5. **🟢 Press Run**

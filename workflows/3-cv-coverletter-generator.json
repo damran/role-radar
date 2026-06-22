@@ -54,27 +54,27 @@
             },
             {
               "name": "CANDIDATE_NAME",
-              "stringValue": "Alex Mercer"
+              "stringValue": "Jordan Avery"
             },
             {
               "name": "CANDIDATE_EMAIL",
-              "stringValue": "alex.mercer@example.com"
+              "stringValue": "jordan.avery@example.com"
             },
             {
               "name": "CANDIDATE_PHONE",
-              "stringValue": "+49 30 1234 5678"
+              "stringValue": "+31 6 1234 5678"
             },
             {
               "name": "CANDIDATE_LINKEDIN",
-              "stringValue": "linkedin.com/in/alex-mercer/"
+              "stringValue": "linkedin.com/in/jordan-avery/"
             },
             {
               "name": "CANDIDATE_LOCATION",
-              "stringValue": "Berlin, Germany"
+              "stringValue": "Amsterdam, Netherlands"
             },
             {
               "name": "FULL_CV_CONTEXT",
-              "stringValue": "Name: Alex Mercer\nCurrent Title: Senior Security Engineer / Detection & Response Lead\nLocation: Berlin, Germany\nLanguages: English (Fluent), German (B1/B2)\nExperience: 12+ years in Cybersecurity, SOC, and Detection Engineering\n\n[EXECUTIVE SUMMARY]\nSenior cybersecurity engineer with 12+ years building and scaling SOCs across cloud and enterprise environments. Track record deploying multi-cloud SOC infrastructure (AWS, Azure, GCP), tuning SIEM pipelines, and reducing response times. Expert in Detection-as-Code using Terraform and CI/CD pipelines.\n\n[CORE COMPETENCIES]\n- Security Operations: Multi-cloud SOC, Detection Engineering, Incident Response, Threat Hunting, Purple Teaming\n- Cloud & Automation: AWS, GCP, Azure, Detection-as-Code, Terraform, GitHub CI/CD, Python, Bash\n- SIEM & EDR: Sumo Logic, Splunk, SentinelOne, ELK Stack\n- Network & AppSec: Cloudflare WAF, F5 BigIP ASM/APM, Checkpoint Firewalls, Cisco ISE\n- PKI & Email Security: AD PKI infrastructure, DMARC/DKIM/SPF policies\n- Threat Intelligence: MISP integration, DNS Firewall, open-source threat feeds\n\n[PROFESSIONAL EXPERIENCE]\n1. Nimbus Retail GmbH | Berlin | Senior Security Engineer (2021 - Present)\n- Built the company's first multi-cloud SOC with centralized SIEM (Sumo Logic) across AWS, Azure, GCP\n- Authored 150+ custom detection rules; integrated alerting via Slack/Jira/PagerDuty\n- Championed Detection-as-Code (Terraform + GitHub CI/CD), reducing deployment errors by ~85%\n- Optimized SIEM ingestion, reducing cost by ~20% while improving coverage\n- Hardened applications via Cloudflare WAF tuning and SentinelOne EDR optimization\n\n2. Helios Defense Systems | Remote/EU | Lead Security Engineer (2013 - 2021)\n- Secured mission-critical multi-tier networks to strict compliance standards\n- Architected F5 BigIP ASM (WAF), Checkpoint Firewalls, Cisco ISE for NAC\n- Deployed Network Security Monitoring with Security Onion, Zeek\n- Set up AD PKI infrastructure\n- Stood up MISP-based threat intelligence\n- Created DMARC/DKIM/SPF policies that significantly reduced phishing\n\n[CERTIFICATIONS]\n- AWS Certified Solutions Architect - Associate\n- AWS Certified Cloud Practitioner\n- HashiCorp Terraform Associate\n- Certified Ethical Hacker (CEH)\n\n[EDUCATION]\nB.Sc. Computer Engineering"
+              "stringValue": "Name: Jordan Avery\nCurrent Title: Senior Product Marketing Manager\nLocation: Amsterdam, Netherlands\nLanguages: English (Native), Dutch (B1)\nExperience: 9+ years in B2B SaaS product marketing and go-to-market\n\n[EXECUTIVE SUMMARY]\nProduct marketing leader with 9+ years taking B2B SaaS products to market across Europe. Owns positioning, launch strategy, and lifecycle marketing, partnering closely with product, sales, and demand generation. Strong at turning technical capabilities into clear buyer-facing stories and at reading the analytics behind the funnel.\n\n[CORE COMPETENCIES]\n- Go-to-Market: Product positioning, messaging frameworks, launch planning, competitive intelligence, pricing and packaging input\n- Lifecycle & Demand: Email lifecycle, onboarding flows, nurture campaigns, webinars, content strategy\n- Sales Enablement: Battlecards, pitch decks, demo narratives, win/loss analysis\n- Tools: HubSpot, Marketo, Salesforce, Figma, Webflow, Google Analytics 4, Amplitude, Notion\n- Content & SEO: Long-form content, case studies, SEO and SEM fundamentals, copywriting\n- Analytics: Funnel analysis, A/B testing, attribution basics, basic SQL\n\n[PROFESSIONAL EXPERIENCE]\n1. Tideway Software | Amsterdam | Senior Product Marketing Manager (2021 - Present)\n- Led go-to-market for three product launches, coordinating product, sales, and demand-generation teams\n- Rebuilt the messaging and positioning framework now used across the website, sales decks, and onboarding\n- Launched a lifecycle email program that improved trial-to-paid activation\n- Created a sales enablement library (battlecards, demo scripts) adopted by sales across every region\n- Ran quarterly win/loss interviews and fed the insights back into roadmap and positioning\n\n2. Larkfield Digital | Rotterdam | Product Marketing Manager (2016 - 2021)\n- Owned positioning and launch for a B2B analytics product from beta to general availability\n- Built the customer reference and case-study program from scratch\n- Partnered with demand generation on webinars and nurture tracks that grew qualified pipeline\n- Wrote long-form content and SEO landing pages that grew organic traffic\n\n[CERTIFICATIONS]\n- HubSpot Inbound Marketing Certification\n- Google Analytics (GA4) Certification\n- Pragmatic Institute - Product Marketing Certified (PMC-III)\n\n[EDUCATION]\nB.A. Communications & Media, University of Amsterdam"
             },
             {
               "name": "DRIVE_UPLOAD_ROOT_FOLDER_ID",
@@ -86,7 +86,7 @@
             },
             {
               "name": "SKILLS",
-              "stringValue": "Security Operations: Multi-cloud SOC management, Detection Engineering, Incident Response, Threat Hunting, Purple Teaming\nCloud & Automation: AWS, Azure, GCP, Detection-as-Code, Terraform, GitHub Actions (CI/CD), Python, Bash\nSIEM & EDR: Sumo Logic, Splunk, SentinelOne, ELK Stack\nNetwork & AppSec: Cloudflare WAF, F5 BigIP ASM/APM, Checkpoint Firewalls, Cisco ISE (NAC), IDS/IPS (Zeek, Suricata)\nIdentity & Email Security: Active Directory PKI, DMARC, DKIM, SPF\nThreat Intelligence: MISP, DNS Firewall, open-source threat feeds\nCertifications: AWS Solutions Architect Associate, AWS Cloud Practitioner, HashiCorp Terraform Associate, CEH\nSoft skills: cross-team leadership, mentoring, incident command, technical writing"
+              "stringValue": "Go-to-Market: Product positioning, messaging frameworks, launch planning, competitive intelligence, pricing and packaging input\nLifecycle & Demand: Email lifecycle, onboarding flows, nurture campaigns, webinars, content strategy\nSales Enablement: Battlecards, pitch decks, demo narratives, win/loss analysis\nTools: HubSpot, Marketo, Salesforce, Figma, Webflow, Google Analytics 4, Amplitude, Notion\nContent & SEO: Long-form content, case studies, SEO and SEM fundamentals, copywriting\nAnalytics: Funnel analysis, A/B testing, attribution basics, basic SQL\nCertifications: HubSpot Inbound Marketing, Google Analytics (GA4), Pragmatic Institute PMC-III\nSoft skills: cross-team collaboration, storytelling, stakeholder management, clear writing"
             },
             {
               "name": "CV_TEMPLATE",
@@ -1246,7 +1246,7 @@
         "width": 260,
         "color": 6
       },
-      "id": "e01687f9-782d-411b-a825-77d0f32be286",
+      "id": "3c853db6-7d23-4043-8034-81e3c510fe98",
       "name": "RoleRadar Brand",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,

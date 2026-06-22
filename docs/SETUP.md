@@ -78,7 +78,7 @@ Each workflow starts with a config node. Replace the placeholders:
 
 - `GOOGLE_SHEET_ID` → your Sheet ID
 - `DRIVE_ROOT_FOLDER_ID`, Applications/Archive folder IDs → your folder IDs
-- **Phase 2** – replace the fictional **Alex Mercer** in `Set Candidate Profile` with your real profile,
+- **Phase 2** – replace the fictional **Jordan Avery** in `Set Candidate Profile` with your real profile,
   and set `SCORE_THRESHOLD` (default `65`).
 - **Phase 3** – replace `FULL_CV_CONTEXT` and the `CANDIDATE_*` fields with your details, add your **`SKILLS`**
   (skillset), and pick a **`CV_TEMPLATE`** (`auto`, or `1`–`15`) — see [CVs & cover letters](CV_AND_COVER_LETTERS.md).

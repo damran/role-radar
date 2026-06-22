@@ -17,5 +17,5 @@ Real screenshots make the repo even more convincing. Suggested additions, refere
 - `sheet-example.png` — the `Jobs` tab populated with scored jobs
 - `demo.gif` — a short screen recording of a full run (great at the top of the README)
 
-**Tip:** capture at ~1600px wide. Always use the fictional **Alex Mercer** sample data — never show real keys,
+**Tip:** capture at ~1600px wide. Always use the fictional **Jordan Avery** sample data — never show real keys,
 your real Sheet ID, or personal data in screenshots.
