@@ -93,6 +93,7 @@ flowchart LR
 - 🧠 **LLM scoring with an explicit rubric** — skills, seniority, location, comp, company type — not vibes.
 - 🌍 **Configurable language gate** — English-only out of the box; exclude any language you don't speak.
 - 🧾 **ATS-optimized CV + cover letter** with anti-"AI-slop" humanization rules baked into the prompts.
+- 🧬 **Skillset matching + 15 ATS CV templates** — truthful, keyword-aligned documents tailored to each job.
 - 🗂️ **Everything in one Google Sheet** — auditable, filterable, no database to run.
 - 💸 **Cheap** — default models cost roughly a few cents per full application. See [cost table](docs/MODELS_AND_COST.md).
 - 🔐 **Secrets done right** — API keys live in n8n credentials, never in the workflow JSON.
@@ -133,6 +134,7 @@ Everything you tune lives in the first **config node** of each workflow (an n8n 
 | `SCORE_THRESHOLD` | Phase 2 config | Default `65` → `Shortlisted` |
 | `LANGUAGE_GATE` + `EXCLUDE_LANGUAGES` | Phase 2 config | `off` \| `english_only` (default) \| `exclude`. See [language gate](docs/SETUP.md#-language-gate). |
 | `SCORING_MODEL` / `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL` | Phase 2 & 3 config | One place to swap models — see [choosing AI models & costs](docs/LLM_GUIDE.md) |
+| `SKILLS` + `CV_TEMPLATE` | Phase 3 config | Your skillset + which of 15 ATS CV templates — see [CVs & cover letters](docs/CV_AND_COVER_LETTERS.md) |
 | Candidate profile / CV context | Phase 2 `Set Candidate Profile`, Phase 3 config | Replace the fictional **Alex Mercer** with you |
 
 ## 🗂️ Repository structure
@@ -150,6 +152,7 @@ role-radar/
 
 - **[Setup guide](docs/SETUP.md)** — beginner-friendly, step by step
 - **[Choosing AI models & costs](docs/LLM_GUIDE.md)** — which model to use, pros/cons, price per job
+- **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** — skillset, matching & 15 ATS CV templates
 - **[Architecture](docs/ARCHITECTURE.md)** — how the pieces fit together
 - **[Google Sheet template](docs/GOOGLE_SHEET_TEMPLATE.md)** — tabs & columns
 - **[Model technical reference](docs/MODELS_AND_COST.md)** — where each model is set
