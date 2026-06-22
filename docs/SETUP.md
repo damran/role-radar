@@ -1,12 +1,21 @@
 # Setup Guide
 
-From zero to your first auto-generated CV in ~30 minutes.
+From zero to your first auto-generated CV in about 30 minutes. **No coding needed** — you'll do some one-time
+clicking, then press **Run**. Every term is explained as it comes up.
 
-## 0. Prerequisites
+> **Words you'll see (quick glossary):**
+> - **n8n** — the free app that runs the workflows (think: a visual flowchart that actually *does* things).
+> - **Workflow** — one of RoleRadar's 4 files you import (Discover, Archive, Score, Generate).
+> - **Node** — a single step (box) inside a workflow.
+> - **Credential** — where n8n safely stores a login or key, so you enter it only once.
+> - **API key** — a password-like code that lets RoleRadar use a paid service (here, OpenRouter for the AI).
+> - **Slug** — the short name of an AI model, e.g. `deepseek/deepseek-v4-flash`.
 
-- A running **n8n** instance (cloud or self-hosted, v1.x).
-- A **Google account** (for Sheets + Drive).
-- An **OpenRouter** account + API key — <https://openrouter.ai/keys>.
+## 0. What you'll need
+
+- An **n8n** account — the free **[Cloud trial](https://n8n.io)** is easiest (nothing to install); self-hosting also works.
+- A **Google account** (for Google Sheets + Drive).
+- An **OpenRouter** account + API key — <https://openrouter.ai/keys> (this is the only paid part; a few $/month).
 
 ## 1. Create the Google Sheet
 

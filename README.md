@@ -92,7 +92,18 @@ flowchart LR
 - 🔐 **Secrets done right** — API keys live in n8n credentials, never in the workflow JSON.
 - 🩹 **Resilient** — hardened JSON parsing, retries, and a visible `Needs Review` status instead of silent failures.
 
-## 🚀 Quick start
+## 🧰 What you'll need (about 30 minutes, one-time)
+
+**No coding required.** You'll need three accounts that are free to start:
+
+- **[n8n](https://n8n.io)** — runs the workflows. The free **Cloud trial is easiest** (nothing to install).
+- **Google** — RoleRadar saves jobs to a Google Sheet and documents to Google Drive.
+- **[OpenRouter](https://openrouter.ai)** — provides the AI (pay-as-you-go, usually a few dollars a month).
+
+New to automation tools? Follow the **[step-by-step setup guide](docs/SETUP.md)** — it explains each term as it
+comes up, with no assumed background.
+
+## 🚀 Quick start (the short version)
 
 1. **Import** the four files in [`workflows/`](workflows) into your n8n instance.
 2. **Create credentials** (see [SETUP](docs/SETUP.md)):
@@ -115,7 +126,7 @@ Everything you tune lives in the first **config node** of each workflow (an n8n 
 | Search keywords / location / filters | `Filter` tab in the Sheet | One row = one search |
 | `SCORE_THRESHOLD` | Phase 2 config | Default `65` → `Shortlisted` |
 | `LANGUAGE_GATE` + `EXCLUDE_LANGUAGES` | Phase 2 config | `off` \| `english_only` (default) \| `exclude`. See [language gate](docs/SETUP.md#-language-gate). |
-| `SCORING_MODEL` / `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL` | Phase 2 & 3 config | One place to swap models — see [models & cost](docs/MODELS_AND_COST.md) |
+| `SCORING_MODEL` / `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL` | Phase 2 & 3 config | One place to swap models — see [choosing AI models & costs](docs/LLM_GUIDE.md) |
 | Candidate profile / CV context | Phase 2 `Set Candidate Profile`, Phase 3 config | Replace the fictional **Alex Mercer** with you |
 
 ## 🗂️ Repository structure
@@ -128,6 +139,14 @@ role-radar/
 ├── .env.example        # placeholder secrets (optional env-var path)
 └── README.md
 ```
+
+## 📚 Documentation
+
+- **[Setup guide](docs/SETUP.md)** — beginner-friendly, step by step
+- **[Choosing AI models & costs](docs/LLM_GUIDE.md)** — which model to use, pros/cons, price per job
+- **[Architecture](docs/ARCHITECTURE.md)** — how the pieces fit together
+- **[Google Sheet template](docs/GOOGLE_SHEET_TEMPLATE.md)** — tabs & columns
+- **[Model technical reference](docs/MODELS_AND_COST.md)** — where each model is set
 
 ## 🔐 Security
 

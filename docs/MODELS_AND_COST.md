@@ -1,7 +1,11 @@
-# Models & Cost
+# Models — technical reference
 
 All model choices are **centralized** in the config (`Set`) node of each workflow. Changing a model is a
 one-line edit — you never have to touch the HTTP nodes or hunt through JSON.
+
+> 🤖 **New here, or want to pick the right model and see costs per job?** Read the friendly
+> **[Choosing Your AI Models guide](LLM_GUIDE.md)** — model options, pros/cons, and cost analysis per
+> application. This page is the quick technical reference.
 
 ## Where each model is set
 
@@ -23,31 +27,15 @@ one-line edit — you never have to touch the HTTP nodes or hunt through JSON.
 2. Edit the relevant `*_MODEL` value (e.g. set `SCORING_MODEL` to a different OpenRouter slug).
 3. Save and re-run. That's it — the request body reads the value from config.
 
-## Cost (rough, order-of-magnitude)
+## Cost & cost-saving presets
 
-Costs depend entirely on the models you pick and on prompt/response length. With the cheap DeepSeek default for
-scoring and a premium Claude model for the final documents, a typical run looks like:
+Full cost analysis (per job and per application, with three ready presets) lives in the
+**[Choosing Your AI Models guide →](LLM_GUIDE.md#cost-per-application)**.
 
-| Step | Model class | Tokens (≈) | Indicative cost |
-|------|-------------|-----------|-----------------|
-| Score one job (Phase 2) | budget (DeepSeek) | ~2–4k | fractions of a cent |
-| CV + cover letter (Phase 3) | premium (Claude Sonnet) | ~6–8k | a few cents |
-| SWOT + study guide (Phase 3) | budget (DeepSeek) | ~6–8k | ~a cent |
-
-**Net:** scoring hundreds of jobs costs cents; generating a full application pack costs a few cents each. Check
-live per-model pricing on the OpenRouter model page — it's printed next to every slug.
-
-## Cost-saving presets
-
-Phase 3 ships with **disabled** alternative nodes (`… - Quality First`, `… - Hybrid Smart`) showing cheaper
-model setups. To use one, enable the alternative node and disable the premium one with the same role. Update its
-hardcoded slug to a current one first.
-
-| Preset | CV / CL model | Relative cost |
-|--------|---------------|---------------|
-| Full Premium (default) | Claude Sonnet | 1× |
-| Quality-First | Claude Haiku | ~0.4× |
-| Hybrid Smart | DeepSeek | ~0.2× |
+Quick version: Phases 1 & 1.5 use no AI (free). Scoring costs a fraction of a cent per job; a full application
+pack (CV + cover letter + SWOT + study guide) costs roughly **1–15¢** depending on whether you use budget or
+premium writers. Phase 3 also ships **disabled** "Quality First" / "Hybrid" example nodes for cheaper setups —
+enable one, disable the matching premium node, and update its slug.
 
 ## Why JSON-returning calls are hardened
 
