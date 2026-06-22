@@ -100,7 +100,7 @@ You only need three free-to-start accounts and about **30 minutes, once**:
 
 | You need | Why | Cost |
 |----------|-----|------|
-| **[n8n](https://n8n.io)** | Runs the workflows (free Cloud trial = nothing to install) | Free to start |
+| **[n8n](https://n8n.io)** | Runs the workflows (free Cloud trial, or [self-host with Docker](docs/SELF_HOSTING.md)) | Free to start |
 | **Google** | Stores jobs (Sheet) + documents (Drive) | Free |
 | **[OpenRouter](https://openrouter.ai)** | The AI that scores and writes | A few $/month, pay-as-you-go |
 
@@ -155,6 +155,7 @@ Everything you tune lives in the first **config box** of each workflow — no co
 |-------|-----|
 | **[⚡ Quick Start](docs/QUICKSTART.md)** | The fastest path to your first tailored CV (~30 min) |
 | **[Setup guide](docs/SETUP.md)** | The detailed walk-through, every term explained |
+| **[Self-hosting with Docker](docs/SELF_HOSTING.md)** | Run n8n free on your own machine (private, no Cloud) |
 | **[Credentials & Google access](docs/CREDENTIALS.md)** | Connecting Google (Cloud vs self-hosted) + OpenRouter |
 | **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** | How tailoring works + the 15 ATS templates |
 | **[Choosing AI models & costs](docs/LLM_GUIDE.md)** | Which model to use, pros/cons, price per job |

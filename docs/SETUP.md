@@ -13,7 +13,8 @@ clicking, then press **Run**. Every term is explained as it comes up.
 
 ## 0. What you'll need
 
-- An **n8n** account — the free **[Cloud trial](https://n8n.io)** is easiest (nothing to install); self-hosting also works.
+- An **n8n** account — the free **[Cloud trial](https://n8n.io)** is easiest (nothing to install), or run it
+  **free with Docker** on your own machine — see **[SELF_HOSTING.md](SELF_HOSTING.md)**.
 - A **Google account** (for Google Sheets + Drive).
 - An **OpenRouter** account + API key — <https://openrouter.ai/keys> (this is the only paid part; a few $/month).
 
