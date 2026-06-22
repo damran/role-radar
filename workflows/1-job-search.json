@@ -539,10 +539,8 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 1507373342,
-          "mode": "list",
-          "cachedResultName": "Filter",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID/edit#gid=1507373342"
+          "value": "Filter",
+          "mode": "name"
         },
         "options": {}
       },
@@ -723,7 +721,7 @@
         "width": 260,
         "color": 4
       },
-      "id": "b6bbbf73-c072-4faf-a050-c85d0f31992c",
+      "id": "138ac7a9-3371-4bb8-b856-5b8a661304c6",
       "name": "RoleRadar Brand",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
