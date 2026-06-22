@@ -816,7 +816,8 @@
             "swot_strengths": "={{ $json.swot_summary.substring(0, 500) }}",
             "improvement_notes": "={{ $json.top_improvements }}",
             "interview_prep": "={{ $json.interview_prep_tips }}",
-            "row_number": 0
+            "row_number": 0,
+            "cv_template": "={{ $json.cv_template_used }}"
           },
           "matchingColumns": [
             "job_id"
@@ -1194,6 +1195,15 @@
               "canBeUsedToMatch": true,
               "readOnly": true,
               "removed": false
+            },
+            {
+              "id": "cv_template",
+              "displayName": "cv_template",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -1236,7 +1246,7 @@
         "width": 260,
         "color": 6
       },
-      "id": "7b3e54c8-2069-4b9d-b7e0-04cb00be24f1",
+      "id": "0f279b36-1208-458e-9424-b0ffe7ed0d73",
       "name": "RoleRadar Brand",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,

@@ -82,6 +82,13 @@ Each workflow starts with a config node. Replace the placeholders:
   [MODELS_AND_COST.md](MODELS_AND_COST.md) and <https://openrouter.ai/models>.
 - **Phase 2** – set the [language gate](#-language-gate) (`LANGUAGE_GATE`, `EXCLUDE_LANGUAGES`). Default is English-only.
 
+> **Example — pick your CV template:** in Phase 3's `Set Job ID` node, set `CV_TEMPLATE` to:
+> - `auto` *(default)* — RoleRadar picks the best layout per job (e.g. engineer → Technical, senior → Leadership).
+> - a number `1`–`15`, or a name like `Technical / Engineering` — to force one style for every application.
+>
+> The template actually used is written to the `cv_template` column of your sheet, so you can see it per job.
+> Full list & guidance: [CVs & cover letters](CV_AND_COVER_LETTERS.md).
+
 ## 6. Add your searches
 
 In the `Filter` tab, add one row per search. Columns:

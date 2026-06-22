@@ -17,8 +17,11 @@ recommendation, callback_likelihood, salary_range, company_size, company_sector,
 company_summary, matched_skills, missing_skills, green_flags, red_flags,
 swot_strengths, swot_weaknesses, swot_opportunities, swot_threats,
 improvement_notes, interview_prep, ai_summary, cv_link, cover_letter_link,
-study_guide_link, date_found, applied_date, notes
+study_guide_link, date_found, applied_date, notes, cv_template
 ```
+
+`cv_template` records which of the 15 ATS CV templates was used for that application
+(see [CVs & cover letters](CV_AND_COVER_LETTERS.md)).
 
 Phase 1 fills the first dozen columns; Phase 2 fills score/recommendation/SWOT/etc.; Phase 3 fills the
 `*_link` columns and sets `status = Docs Generated`.
