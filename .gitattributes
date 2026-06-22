@@ -4,3 +4,9 @@
 *.md   text eol=lf
 *.svg  text eol=lf
 *.csv  text eol=lf
+
+# Binary assets — never normalize line endings (would corrupt them)
+*.xlsx binary
+*.png  binary
+*.gif  binary
+*.jpg  binary

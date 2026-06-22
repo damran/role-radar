@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 📡 RoleRadar — Phase 3 · Generate Docs\n\nFor strong matches, generates an ATS-tuned **CV**, **cover letter**, **SWOT** and **interview study guide** — one Drive folder per application.\n\n**In:** `Shortlist`  •  **Out:** Drive folders + `Jobs` (status = `Docs Generated`)\n**Models:** `Set Job ID` → `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL`\n\n— github.com/damran/role-radar",
+        "content": "## 📡 RoleRadar — Phase 3 · Generate Docs\n\nFor strong matches, generates an ATS-tuned **CV**, **cover letter**, **SWOT** and **interview study guide** — one Drive folder per application.\n\n**In:** `Shortlist`  •  **Out:** Drive folders + `Jobs` (status = `Docs Generated`)\n**Models:** `Set Job ID` → `CV_MODEL` / `CL_MODEL` / `SWOT_MODEL` / `STUDY_MODEL`\n\n— github.com/damran/role-radar\n\n⚙️ **Setup:** open the **Config box** (the first node) and fill in your details, then add your Google + OpenRouter credentials — see docs/CREDENTIALS.md.",
         "height": 1388,
         "width": 4144,
         "color": 3
@@ -1246,7 +1246,7 @@
         "width": 260,
         "color": 6
       },
-      "id": "aa79b196-c36b-4c7a-a8f0-014855fb4eb7",
+      "id": "8a124fa0-d625-45c1-88ab-83f8d78632bb",
       "name": "RoleRadar Brand",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,

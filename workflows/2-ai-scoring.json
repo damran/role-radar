@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 📡 RoleRadar — Phase 2 · Score & Filter\n\nAI-scores every new job against your profile (0–100), runs a **configurable language gate**, and shortlists the best.\n\n**In:** `Jobs` (status = `New`)  •  **Out:** `Jobs` (`Shortlisted` / `Low Score` / `Needs Review`)\n**Model:** `Load Config` → `SCORING_MODEL`\n**Language gate:** `LANGUAGE_GATE` = `off` | `english_only` | `exclude`  (+ `EXCLUDE_LANGUAGES`)\n\n— github.com/damran/role-radar",
+        "content": "## 📡 RoleRadar — Phase 2 · Score & Filter\n\nAI-scores every new job against your profile (0–100), runs a **configurable language gate**, and shortlists the best.\n\n**In:** `Jobs` (status = `New`)  •  **Out:** `Jobs` (`Shortlisted` / `Low Score` / `Needs Review`)\n**Model:** `Load Config` → `SCORING_MODEL`\n**Language gate:** `LANGUAGE_GATE` = `off` | `english_only` | `exclude`  (+ `EXCLUDE_LANGUAGES`)\n\n— github.com/damran/role-radar\n\n⚙️ **Setup:** open the **Config box** (the first node) and fill in your details, then add your Google + OpenRouter credentials — see docs/CREDENTIALS.md.",
         "height": 1308,
         "width": 3456,
         "color": 4
@@ -1240,7 +1240,7 @@
         "width": 260,
         "color": 5
       },
-      "id": "025e6a86-c3c1-4c91-bf30-f54dca5a6a2b",
+      "id": "d7752abd-4872-447e-ab52-a224db45b56d",
       "name": "RoleRadar Brand",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,

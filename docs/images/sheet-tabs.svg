@@ -28,7 +28,7 @@
     <rect x="322" y="92" width="140" height="32" rx="8" fill="#eef1f8"/>
     <text x="346" y="113" class="t tab">Shortlist</text>
     <rect x="468" y="92" width="140" height="32" rx="8" fill="#eef1f8"/>
-    <text x="492" y="113" class="t tab">Archieve</text>
+    <text x="492" y="113" class="t tab">Archive</text>
   </g>
 
   <!-- mini Filter table -->
@@ -68,7 +68,7 @@
     <text x="40" y="372" class="t note"><tspan font-weight="800" fill="#10b981">Filter</tspan> — your searches (you fill this in)</text>
     <text x="40" y="398" class="t note"><tspan font-weight="800">Jobs</tspan> — every job + all AI results land here</text>
     <text x="500" y="372" class="t note"><tspan font-weight="800">Shortlist</tspan> — the strong matches Phase 3 uses</text>
-    <text x="500" y="398" class="t note"><tspan font-weight="800">Archieve</tspan> — saved copies of job descriptions</text>
+    <text x="500" y="398" class="t note"><tspan font-weight="800">Archive</tspan> — saved copies of job descriptions</text>
   </g>
 
   <text x="40" y="442" class="t foot">Tip: copy the exact column headers from sheet-template/columns.csv into the Jobs tab.</text>

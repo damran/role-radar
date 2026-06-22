@@ -45,7 +45,7 @@ flowchart LR
   subgraph Sheet["🗒️ Google Sheet (single source of truth)"]
     JOBS[(Jobs tab)]
     FILTER[(Filter tab — your search keywords)]
-    ARCH[(Archieve)]
+    ARCH[(Archive)]
   end
 
   FILTER --> P1
@@ -154,6 +154,7 @@ Everything you tune lives in the first **config box** of each workflow — no co
 |-------|-----|
 | **[⚡ Quick Start](docs/QUICKSTART.md)** | The fastest path to your first tailored CV (~30 min) |
 | **[Setup guide](docs/SETUP.md)** | The detailed walk-through, every term explained |
+| **[Credentials & Google access](docs/CREDENTIALS.md)** | Connecting Google (Cloud vs self-hosted) + OpenRouter |
 | **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** | How tailoring works + the 15 ATS templates |
 | **[Choosing AI models & costs](docs/LLM_GUIDE.md)** | Which model to use, pros/cons, price per job |
 | **[Example profiles](docs/EXAMPLE_PROFILES.md)** | Adapt it to any field |

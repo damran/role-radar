@@ -32,7 +32,7 @@ swot_strengths, swot_weaknesses, swot_opportunities, swot_threats, improvement_n
 ai_summary, cv_link, cover_letter_link, study_guide_link, date_found, applied_date, notes, cv_template
 ```
 
-### Tab `Archieve` (Archive index)
+### Tab `Archive` (Archive index)
 `job_id, title, company, location, posted_date, archived_date, drive_link, job_url, score, status`
 
 ### `status` — the state machine
@@ -56,7 +56,7 @@ New ──(Score)──▶ Shortlisted ──(Generate)──▶ Docs Generated
 - **Termination:** stop at max pages per keyword; advance pages via a page counter carried on the items.
 
 ### Phase 1.5 — Archive (optional)
-- **In:** `Jobs` not already in `Archieve`. **Out:** a Markdown file in Drive `_archive` + an `Archieve` row.
+- **In:** `Jobs` not already in `Archive`. **Out:** a Markdown file in Drive `_archive` + an `Archive` row.
 - Fetch each job page, strip to clean Markdown, upload, upsert the index row (keyed on `job_id`).
 
 ### Phase 2 — Score

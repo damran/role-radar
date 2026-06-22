@@ -1,6 +1,10 @@
 # Google Sheet Template
 
-Create one Google Sheet with the four tabs below. Put each column list in **row 1** (the header row). Column
+> ⚡ **Easiest (recommended):** download **[`RoleRadar-sheet-template.xlsx`](../sheet-template/RoleRadar-sheet-template.xlsx)**,
+> then in Google Drive choose **New → File upload**, and right-click the file → **Open with → Google Sheets**.
+> You get all the tabs and columns ready-made — you can skip the manual setup below.
+
+Or build it by hand. Create one Google Sheet with the four tabs below. Put each column list in **row 1** (the header row). Column
 order is not strict, but the **names must match exactly** (they map to the n8n nodes).
 
 The `Jobs` header row is also provided as [`sheet-template/columns.csv`](../sheet-template/columns.csv) — open
@@ -63,10 +67,13 @@ See [SETUP → Shortlist tab](SETUP.md#shortlist-tab).
 
 ---
 
-## Tab: `Archieve` (Phase 1.5 index)
-
-> Spelled `Archieve` on purpose — it matches the node configuration. Rename both if it bothers you.
+## Tab: `Archive` (Phase 1.5 index)
 
 ```
 job_id, title, company, location, posted_date, archived_date, drive_link, job_url, score, status
 ```
+
+---
+
+> **Optional extras:** you can add your own tabs (e.g. a `Dashboard` with charts, or a `Search_Log`) — the
+> workflows don't read or write them, so they're entirely yours to design.

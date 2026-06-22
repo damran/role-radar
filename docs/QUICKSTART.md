@@ -21,16 +21,17 @@ takes about 30 focused minutes. After that, running it is just pressing **Run**.
    - [OpenRouter](https://openrouter.ai) — this is the AI. Add a few dollars of credit.
 
 2. **🟢 Make your Google Sheet**
-   Create a new Google Sheet and add the tabs + column headers from
-   [the sheet template](GOOGLE_SHEET_TEMPLATE.md) (copy the `Jobs` header row straight from
-   [`sheet-template/columns.csv`](../sheet-template/columns.csv)). Make two Google Drive folders too
-   (one for documents, one for the archive).
+   Easiest: download **[`RoleRadar-sheet-template.xlsx`](../sheet-template/RoleRadar-sheet-template.xlsx)**,
+   upload it to Google Drive, and right-click → **Open with → Google Sheets** — all tabs and columns ready-made.
+   Then make two Google Drive folders (one for documents, one for the archive). Details:
+   [sheet template](GOOGLE_SHEET_TEMPLATE.md).
 
 3. **🟡 Connect your accounts in n8n** *(the fiddly bit)*
    Import the four files from [`workflows/`](../workflows), then create three credentials:
    - **Google Sheets** and **Google Drive** — click "Sign in with Google".
    - **OpenRouter** — a "Header Auth" credential: Name = `Authorization`, Value = `Bearer ` + your key.
-   Pictures and exact clicks are in [SETUP → step 3](SETUP.md#3-add-credentials-in-n8n).
+   Exact clicks (incl. self-hosted Google setup) are in **[CREDENTIALS.md](CREDENTIALS.md)** and
+   [SETUP → step 3](SETUP.md#3-add-credentials-in-n8n).
 
 4. **🟢 Tell it about you**
    Open the first box (`Set` / `Load Config`) in each workflow and paste your Google Sheet ID, your folder IDs,

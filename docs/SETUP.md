@@ -27,7 +27,7 @@ Create one Google Sheet with **four tabs**. Exact columns are in
 |-----|---------|
 | `Jobs` | Main table — every job and all AI output lands here. |
 | `Filter` | **Your searches** — one row per keyword/location/filter combination. |
-| `Archieve` | Job-description archive index (Phase 1.5). *(Yes, spelled this way to match the node.)* |
+| `Archive` | Job-description archive index (Phase 1.5). |
 | `Shortlist` | **Optional** — Phase 3 reads `Jobs` by default. See [the note below](#shortlist-tab). |
 
 Copy the Sheet's ID from its URL (`https://docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`).
@@ -53,6 +53,10 @@ Create these once; every workflow references them by name.
 
 > 🔐 The OpenRouter key lives **only** in this credential — never in a node. That's why the workflow files in
 > this repo are safe to share.
+
+> 🔑 **Connecting Google** — on **n8n Cloud** you just click "Sign in with Google". On **self-hosted** n8n you
+> create your own Google OAuth app (Cloud project + APIs + consent screen). Full steps, Workspace notes, and the
+> OpenRouter Header Auth setup are in **[CREDENTIALS.md](CREDENTIALS.md)** (with links to n8n's own docs).
 
 ![Where to paste your OpenRouter key: Name = Authorization, Value = Bearer your-key, then Save](images/credential-setup.svg)
 

@@ -43,7 +43,7 @@ flowchart TB
   `Experience Level`, `Remote`, `Job Type`, `Easy Apply`.
 - **`Shortlist`** — **optional.** Phase 3 reads the `Jobs` tab (`status = Shortlisted`) by default; a `Shortlist`
   QUERY view is an alternative (see [SETUP](SETUP.md#shortlist-tab)).
-- **`Archieve`** — Phase 1.5's index of archived job descriptions.
+- **`Archive`** — Phase 1.5's index of archived job descriptions.
 
 ### Google Drive
 - **Applications/** — Phase 3 makes `YYYY-MM-DD__Company__Role__ScoreNN/` sub-folders, each with CV, cover
