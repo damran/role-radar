@@ -103,6 +103,10 @@ RoleRadar ships **15 ATS-safe CV structures**. They change the *section order an
 design (keeping them ATS-parseable). Set your choice in the Phase 3 config field **`CV_TEMPLATE`** —
 use `auto`, a number, or the template name.
 
+Every template is **structure-only**: the truthfulness and human-voice rules (use only real numbers, never a
+metric on every bullet, no em dashes, no AI-cliché verbs) apply on top of all 15 and always override the layout
+— so the template you pick never makes the writing look AI-generated.
+
 | # | Template | Best for |
 |---|----------|----------|
 | 1 | Classic Reverse-Chronological | The safe default; steady career history |
