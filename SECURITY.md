@@ -25,16 +25,6 @@ API keys live in **n8n's encrypted credential store**, not in the workflow JSON:
 
 This means you can safely export and share any workflow from this repo without leaking a key.
 
-## Before you publish your own fork
-
-Run a quick secret scan and make sure it returns **nothing**:
-
-```bash
-grep -REn "sk-or-v1-|AIza[0-9A-Za-z_-]{20,}|/spreadsheets/d/[A-Za-z0-9_-]{30,}" workflows/ || echo "clean"
-```
-
-Optionally add [`gitleaks`](https://github.com/gitleaks/gitleaks) as a pre-commit hook.
-
 ## Responsible use
 
 - Respect LinkedIn's Terms of Service and rate limits — the workflows add deliberate delays; don't remove them.

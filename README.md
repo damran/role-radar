@@ -17,7 +17,6 @@
   <img alt="Built with n8n" src="https://img.shields.io/badge/built%20with-n8n-22d3ee">
   <img alt="LLM via OpenRouter" src="https://img.shields.io/badge/LLM-OpenRouter-a06bff">
   <img alt="No code" src="https://img.shields.io/badge/no--code-friendly-6b8bff">
-  <a href="#-contributing"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-ff8a5c"></a>
 </p>
 
 <p align="center">
@@ -154,17 +153,10 @@ API keys are **never** stored in these workflow files — they live in n8n's enc
 exported JSON only references them by name. Please read **[SECURITY.md](SECURITY.md)** before publishing your
 own fork, and **rotate any key you've ever pasted into a workflow node**.
 
-## 🗺️ Roadmap
+## 💬 Feedback
 
-- [ ] Optional scheduled triggers (daily cron) per phase
-- [ ] Email/Telegram digest of new shortlisted roles
-- [ ] Pluggable sources beyond LinkedIn (Adzuna, RemoteOK, company boards, RSS)
-- [ ] Export CV/cover letter straight to PDF/Google Docs (not just Markdown)
-
-## 🤝 Contributing
-
-PRs and issues welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first contributions: new job sources,
-better prompts, additional language packs, or a one-click Google Sheet template link.
+Shared as-is, as a personal project — there's no active roadmap. Found a bug or have an idea? Open an
+**issue** on GitHub and I may pick it up.
 
 ## 📄 License
 
