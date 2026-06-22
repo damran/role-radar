@@ -28,7 +28,7 @@ Create one Google Sheet with **four tabs**. Exact columns are in
 | `Jobs` | Main table — every job and all AI output lands here. |
 | `Filter` | **Your searches** — one row per keyword/location/filter combination. |
 | `Archieve` | Job-description archive index (Phase 1.5). *(Yes, spelled this way to match the node.)* |
-| `Shortlist` | Source for Phase 3 — see [the note below](#shortlist-tab). |
+| `Shortlist` | **Optional** — Phase 3 reads `Jobs` by default. See [the note below](#shortlist-tab). |
 
 Copy the Sheet's ID from its URL (`https://docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`).
 
@@ -128,18 +128,17 @@ Run them in order, each via its manual trigger:
 
 `Phase 1.5` (archive) is optional and can run any time after Phase 1.
 
-## <a id="shortlist-tab"></a>⚠️ The `Shortlist` tab (one decision to make)
+## <a id="shortlist-tab"></a>✅ Shortlist (no setup needed)
 
-Phase 2 writes shortlisted jobs to the **`Jobs`** tab (`status = Shortlisted`), but Phase 3 reads a tab named
-**`Shortlist`**. Pick one:
+By default, **Phase 3 reads the `Jobs` tab** and processes the strong matches (jobs whose `recommendation` is
+"Apply immediately" or "Strong apply") that don't already have documents — so there's **nothing extra to set up**.
 
-- **Simplest:** open Phase 3 → `P3: Load Jobs From Shortlist` and change the sheet name from `Shortlist` to
-  `Jobs`. The node already filters by `recommendation`, so it'll just work.
-- **Or** make `Shortlist` a live view of shortlisted rows with a QUERY in cell `A1`:
-  ```
-  =QUERY(Jobs!A:AK, "select * where M = 'Shortlisted'", 1)
-  ```
-  (Adjust the column letter if your `status` column isn't `M`.)
+Prefer a dedicated `Shortlist` tab? Create one with this formula in cell `A1`, then point
+`P3: Load Jobs From Shortlist` at it:
+```
+=QUERY(Jobs!A:AL, "select * where M = 'Shortlisted'", 1)
+```
+(`M` is the `status` column with the default layout.)
 
 ## Troubleshooting
 

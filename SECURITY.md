@@ -28,7 +28,12 @@ This means you can safely export and share any workflow from this repo without l
 ## Responsible use
 
 - Respect LinkedIn's Terms of Service and rate limits — the workflows add deliberate delays; don't remove them.
+  Scraping may conflict with those ToS; use it for personal, low-volume searching at your own risk.
 - The LLM sees the job descriptions and your profile. Use a provider you trust and review its data-retention policy.
+- Job descriptions may contain **other people's personal data** (recruiter names, etc.). When you run RoleRadar
+  **you are the data controller** (GDPR/CCPA may apply) — keep volumes low, don't redistribute scraped data,
+  and minimize what you store.
+- RoleRadar **does not submit applications for you**; it drafts documents you review and send yourself.
 
 ## Reporting
 

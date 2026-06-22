@@ -12,8 +12,8 @@ one-line edit — you never have to touch the HTTP nodes or hunt through JSON.
 | Config variable | Workflow | Used by | Default | Purpose |
 |-----------------|----------|---------|---------|---------|
 | `SCORING_MODEL` | Phase 2 | `P2: DeepSeek AI Scoring` | `deepseek/deepseek-v4-flash` | Score + analyze each job (cheap, fast, JSON). |
-| `CV_MODEL` | Phase 3 | `P3: OpenRouter Generate CV` | `anthropic/claude-sonnet-4.5` | Highest-quality tailored CV. |
-| `CL_MODEL` | Phase 3 | `P3: OpenRouter Generate Cover Letter` | `anthropic/claude-sonnet-4.5` | Human-sounding cover letter. |
+| `CV_MODEL` | Phase 3 | `P3: OpenRouter Generate CV` | `anthropic/claude-sonnet-latest` | Highest-quality tailored CV. |
+| `CL_MODEL` | Phase 3 | `P3: OpenRouter Generate Cover Letter` | `anthropic/claude-sonnet-latest` | Human-sounding cover letter. |
 | `SWOT_MODEL` | Phase 3 | `P3: OpenRouter Generate SWOT` | `deepseek/deepseek-v4-flash` | Structured SWOT JSON. |
 | `STUDY_MODEL` | Phase 3 | `P3: OpenRouter Generate Study Guide` | `deepseek/deepseek-v4-flash` | Interview study guide (Markdown). |
 

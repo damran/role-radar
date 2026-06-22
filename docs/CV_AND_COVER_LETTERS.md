@@ -80,6 +80,11 @@ seconds. RoleRadar is built for both:
   reviewers look for.
 - **Human tone.** Banned AI clichés and varied sentence length, so it doesn't read as machine-written.
 
+> **📄 Output format:** RoleRadar saves the CV/cover letter as **Markdown (`.md`)** files in Drive — clean,
+> single-column, ATS-friendly *content*. Before submitting, open the file in Google Docs or Word and **export to
+> PDF or DOCX** (those are what ATS systems ingest). The Markdown keeps the structure ATS-safe; the export gives
+> you the file format to upload.
+
 ---
 
 ## 4. CV templates — pick a structure

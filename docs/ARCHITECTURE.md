@@ -28,7 +28,7 @@ flowchart TB
     ST --> ASSEMBLE["Assemble + detect failures"]
     ASSEMBLE --> UPLOAD["Upload 4 docs to Drive"]
   end
-  SHORT[(Sheet · Shortlist)] --> FETCH3
+  JOBS -->|status = Shortlisted| FETCH3
   UPLOAD --> DRIVE[(Drive · one folder per job)]
   UPLOAD -->|links, status=Docs Generated / Needs Review| JOBS
 
@@ -41,8 +41,8 @@ flowchart TB
 - **`Jobs`** — the master table. Every column the AI fills (score, SWOT, links, status, …) lives here.
 - **`Filter`** — your search definitions; Phase 1 loops over each row. Columns: `Keyword`, `Location`,
   `Experience Level`, `Remote`, `Job Type`, `Easy Apply`.
-- **`Shortlist`** — what Phase 3 reads. Either repoint Phase 3 to `Jobs` or back this tab with a `QUERY`
-  (see [SETUP](SETUP.md#shortlist-tab)).
+- **`Shortlist`** — **optional.** Phase 3 reads the `Jobs` tab (strong matches) by default; a `Shortlist`
+  QUERY view is an alternative (see [SETUP](SETUP.md#shortlist-tab)).
 - **`Archieve`** — Phase 1.5's index of archived job descriptions.
 
 ### Google Drive

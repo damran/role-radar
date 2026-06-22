@@ -38,7 +38,7 @@
   </g>
 
   <text x="60" y="120" class="t title">&#128225; RoleRadar</text>
-  <text x="60" y="165" class="t sub">Find, score &amp; auto-apply to the right roles &#8212; an AI job pipeline in n8n</text>
+  <text x="60" y="165" class="t sub">Find, score &amp; auto-draft tailored applications &#8212; an AI job pipeline in n8n</text>
 
   <g transform="translate(60,220)">
     <rect x="0"   y="0" width="180" height="56" rx="12" fill="#22d3ee"/>

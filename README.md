@@ -1,12 +1,12 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <p align="center">
-  <img src="docs/images/hero.svg" alt="RoleRadar — find, score and auto-apply to the right roles with an AI pipeline in n8n" width="100%">
+  <img src="docs/images/hero.svg" alt="RoleRadar — find, score and auto-draft tailored applications with an AI pipeline in n8n" width="100%">
 </p>
 
 <h1 align="center">📡 RoleRadar</h1>
 
 <p align="center">
-  <b>Find, score, and auto-apply to the right roles — automatically.</b><br>
+  <b>Find, score, and auto-draft tailored applications for the right roles.</b><br>
   RoleRadar is an end-to-end job-application pipeline built in <a href="https://n8n.io">n8n</a>: it scrapes
   LinkedIn, scores every role against <i>your</i> profile with an LLM, and auto-generates a tailored CV, cover
   letter, SWOT analysis and interview study guide — for a few cents per application.
@@ -64,7 +64,6 @@ flowchart LR
   subgraph Sheet["🗒️ Google Sheet (single source of truth)"]
     JOBS[(Jobs tab)]
     FILTER[(Filter tab — your search keywords)]
-    SHORT[(Shortlist)]
     ARCH[(Archieve)]
   end
 
@@ -72,7 +71,7 @@ flowchart LR
   P1["**1 · Discover**<br/>LinkedIn guest search<br/>+ dedupe"] -->|new jobs| JOBS
   JOBS --> P2["**2 · Score**<br/>AI scoring 0–100<br/>+ SWOT + language gate"]
   P2 -->|score ≥ threshold| JOBS
-  SHORT --> P3["**3 · Generate**<br/>CV · Cover letter<br/>SWOT · Study guide"]
+  JOBS -->|shortlisted| P3["**3 · Generate**<br/>CV · Cover letter<br/>SWOT · Study guide"]
   P3 --> DRIVE[(📁 Google Drive<br/>one folder per application)]
   JOBS -.optional.-> P15["**1.5 · Archive**<br/>JD → Markdown"]
   P15 --> DRIVE
@@ -85,14 +84,14 @@ flowchart LR
 | **1 · Discover** | [`1-job-search.json`](workflows/1-job-search.json) | Searches LinkedIn (free guest endpoint) across your keyword clusters, dedupes, writes new jobs to the sheet. |
 | **1.5 · Archive** | [`1.5-job-archive.json`](workflows/1.5-job-archive.json) | Fetches full job descriptions, converts to Markdown, archives them to Drive. |
 | **2 · Score** | [`2-ai-scoring.json`](workflows/2-ai-scoring.json) | Scores each job 0–100 against your profile, extracts skills/SWOT/salary, runs the language gate, shortlists. |
-| **3 · Generate** | [`3-cv-coverletter-generator.json`](workflows/3-cv-coverletter-generator.json) | For strong matches, generates an ATS-tuned CV, cover letter, SWOT and interview study guide as files in Drive. |
+| **3 · Generate** | [`3-cv-coverletter-generator.json`](workflows/3-cv-coverletter-generator.json) | For strong matches, generates an ATS-structured CV, cover letter, SWOT and interview study guide as Markdown files in Drive. |
 
 ## ✨ Features
 
 - 🔎 **LinkedIn search with no API key** — uses the public guest endpoint, paginates, and rate-limits politely.
 - 🧠 **LLM scoring with an explicit rubric** — skills, seniority, location, comp, company type — not vibes.
 - 🌍 **Configurable language gate** — English-only out of the box; exclude any language you don't speak.
-- 🧾 **ATS-optimized CV + cover letter** with anti-"AI-slop" humanization rules baked into the prompts.
+- 🧾 **ATS-structured CV + cover letter** (Markdown you export to PDF/DOCX) with anti-cliché writing rules.
 - 🧬 **Skillset matching + 15 ATS CV templates** — truthful, keyword-aligned documents tailored to each job.
 - 🗂️ **Everything in one Google Sheet** — auditable, filterable, no database to run.
 - 💸 **Cheap** — default models cost roughly a few cents per full application. See [cost table](docs/MODELS_AND_COST.md).
@@ -154,8 +153,27 @@ role-radar/
 - **[Choosing AI models & costs](docs/LLM_GUIDE.md)** — which model to use, pros/cons, price per job
 - **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** — skillset, matching & 15 ATS CV templates
 - **[Architecture](docs/ARCHITECTURE.md)** — how the pieces fit together
+- **[Rebuild from scratch](docs/REBUILD.md)** — full spec: data model, contracts, LLM JSON shapes
 - **[Google Sheet template](docs/GOOGLE_SHEET_TEMPLATE.md)** — tabs & columns
 - **[Model technical reference](docs/MODELS_AND_COST.md)** — where each model is set
+
+## ⚖️ Legal & responsible use
+
+RoleRadar reads LinkedIn's **public** guest job pages. **Scraping may conflict with LinkedIn's Terms of
+Service** — use it for personal, low-volume job searching at your own risk, keep the built-in rate-limit delays,
+and stop if asked. Job descriptions can contain other people's personal data; when you run RoleRadar **you** are
+the data controller (GDPR and similar laws may apply), and the job text plus your profile are sent to your chosen
+LLM provider — review its data-retention policy and prefer a provider/model you trust. RoleRadar **does not apply
+to any job for you** — it drafts documents that you review and submit yourself. None of this is legal advice.
+
+## ⚠️ Known limitations
+
+- **LinkedIn parsing is best-effort.** It relies on LinkedIn's public HTML; if LinkedIn changes its markup or
+  rate-limits you, Discover may return few/zero jobs until the parser is updated.
+- **Model slugs drift.** Defaults are valid at time of writing; if you see many `Needs Review` rows, verify the
+  model names at [openrouter.ai/models](https://openrouter.ai/models) — it's one edit in the config node.
+- **Documents are Markdown.** Open them in Google Docs/Word and **export to PDF/DOCX before submitting** to an ATS.
+- **A failed AI generation** still creates the job's Drive folder; the row is marked `Needs Review` so you re-run it.
 
 ## 🔐 Security
 
