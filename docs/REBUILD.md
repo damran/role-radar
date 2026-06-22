@@ -68,7 +68,7 @@ New ──(Score)──▶ Shortlisted ──(Generate)──▶ Docs Generated
 - Model: `SCORING_MODEL`.
 
 ### Phase 3 — Generate
-- **In:** `Jobs` strong matches (`recommendation ∈ {Apply immediately, Strong apply}` and not already done).
+- **In:** `Jobs` where `status = Shortlisted` (score ≥ `SCORE_THRESHOLD`) and not already done.
   **Out:** a Drive folder + 4 Markdown files; row updated with `*_link`, `cv_template`, `status`.
 - Steps: fetch JD → build 4 prompts from the candidate **profile + `SKILLS` skillset + per-job
   matched/missing skills + chosen CV template** → 4 OpenRouter calls → assemble (route any failure to

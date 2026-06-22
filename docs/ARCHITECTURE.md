@@ -41,7 +41,7 @@ flowchart TB
 - **`Jobs`** — the master table. Every column the AI fills (score, SWOT, links, status, …) lives here.
 - **`Filter`** — your search definitions; Phase 1 loops over each row. Columns: `Keyword`, `Location`,
   `Experience Level`, `Remote`, `Job Type`, `Easy Apply`.
-- **`Shortlist`** — **optional.** Phase 3 reads the `Jobs` tab (strong matches) by default; a `Shortlist`
+- **`Shortlist`** — **optional.** Phase 3 reads the `Jobs` tab (`status = Shortlisted`) by default; a `Shortlist`
   QUERY view is an alternative (see [SETUP](SETUP.md#shortlist-tab)).
 - **`Archieve`** — Phase 1.5's index of archived job descriptions.
 

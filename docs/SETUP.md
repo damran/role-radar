@@ -124,14 +124,15 @@ Run them in order, each via its manual trigger:
 
 1. **Phase 1** — populates `Jobs` with `status = New`.
 2. **Phase 2** — scores the `New` jobs; good ones become `Shortlisted`.
-3. **Phase 3** — generates CV / cover letter / SWOT / study guide for strong matches into Drive.
+3. **Phase 3** — generates CV / cover letter / SWOT / study guide for every `Shortlisted` job into Drive.
 
 `Phase 1.5` (archive) is optional and can run any time after Phase 1.
 
 ## <a id="shortlist-tab"></a>✅ Shortlist (no setup needed)
 
-By default, **Phase 3 reads the `Jobs` tab** and processes the strong matches (jobs whose `recommendation` is
-"Apply immediately" or "Strong apply") that don't already have documents — so there's **nothing extra to set up**.
+By default, **Phase 3 reads the `Jobs` tab** and generates documents for **every `Shortlisted` job** (score ≥
+`SCORE_THRESHOLD`) that doesn't already have them — so there's **nothing extra to set up**. Want fewer, higher-bar
+documents? Raise `SCORE_THRESHOLD` in the Phase 2 config (e.g. 75).
 
 Prefer a dedicated `Shortlist` tab? Create one with this formula in cell `A1`, then point
 `P3: Load Jobs From Shortlist` at it:

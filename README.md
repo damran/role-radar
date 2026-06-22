@@ -110,8 +110,8 @@ Then:
 3. **Copy** the [Google Sheet template](docs/GOOGLE_SHEET_TEMPLATE.md) and paste your profile into the config box.
 4. **Press Run.** Watch jobs, scores and document links fill up your sheet.
 
-📖 **New to this? The [step-by-step setup guide](docs/SETUP.md) explains every term as it comes up — no
-background assumed.**
+📖 **First time? Start with the [⚡ Quick Start](docs/QUICKSTART.md)** (fastest path, ~30 min) — or the full
+[step-by-step setup guide](docs/SETUP.md), which explains every term as it comes up, no background assumed.
 
 ## ✨ Why RoleRadar (not just another template)
 
@@ -152,7 +152,8 @@ Everything you tune lives in the first **config box** of each workflow — no co
 
 | Guide | For |
 |-------|-----|
-| **[Setup guide](docs/SETUP.md)** | Getting it running, step by step (beginner-friendly) |
+| **[⚡ Quick Start](docs/QUICKSTART.md)** | The fastest path to your first tailored CV (~30 min) |
+| **[Setup guide](docs/SETUP.md)** | The detailed walk-through, every term explained |
 | **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** | How tailoring works + the 15 ATS templates |
 | **[Choosing AI models & costs](docs/LLM_GUIDE.md)** | Which model to use, pros/cons, price per job |
 | **[Example profiles](docs/EXAMPLE_PROFILES.md)** | Adapt it to any field |
