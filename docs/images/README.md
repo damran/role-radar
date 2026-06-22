@@ -4,6 +4,8 @@ Diagrams that ship with the repo (plain-language, render out of the box):
 
 - `hero.svg` — the README banner.
 - `how-it-works.svg` — the 3-step "what happens" diagram (used in the README).
+- `what-you-get.svg` — the four documents produced per match (used in the README).
+- `social-preview.png` — 1280×640 GitHub social-preview image (upload via repo Settings → Social preview).
 - `credential-setup.svg` — "where to paste your OpenRouter key" (used in SETUP step 3).
 - `sheet-tabs.svg` — the Google Sheet's four tabs and the Filter example (used in SETUP step 1).
 
