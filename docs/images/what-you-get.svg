@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340" role="img" aria-label="What RoleRadar produces for every strong match">
+  <defs>
+    <style>
+      .t { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+      .h { font-size: 23px; font-weight: 800; fill: #11162a; }
+      .ct { font-size: 18px; font-weight: 800; fill: #11162a; }
+      .cd { font-size: 13.5px; font-weight: 500; fill: #3a4361; }
+      .ic { font-size: 30px; }
+      .foot { font-size: 15px; font-weight: 600; fill: #28304a; }
+    </style>
+  </defs>
+
+  <rect width="1000" height="340" rx="18" fill="#f4f6fb"/>
+  <rect x="0" y="0" width="1000" height="6" fill="#22d3ee"/>
+  <text x="40" y="52" class="t h">🎁 For every strong match, RoleRadar writes you four documents:</text>
+
+  <!-- card 1 -->
+  <g>
+    <rect x="40" y="80" width="215" height="180" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="40" y="80" width="215" height="8" rx="4" fill="#22d3ee"/>
+    <text x="62" y="135" class="t ic">📄</text>
+    <text x="62" y="170" class="t ct">Tailored CV</text>
+    <text x="62" y="198" class="t cd">ATS-structured and matched</text>
+    <text x="62" y="216" class="t cd">to the job's keywords —</text>
+    <text x="62" y="234" class="t cd">truthfully, never invented.</text>
+  </g>
+  <!-- card 2 -->
+  <g>
+    <rect x="275" y="80" width="215" height="180" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="275" y="80" width="215" height="8" rx="4" fill="#a06bff"/>
+    <text x="297" y="135" class="t ic">✉️</text>
+    <text x="297" y="170" class="t ct">Cover Letter</text>
+    <text x="297" y="198" class="t cd">Specific, human, no clichés.</text>
+    <text x="297" y="216" class="t cd">Reads like you wrote it,</text>
+    <text x="297" y="234" class="t cd">ready to send.</text>
+  </g>
+  <!-- card 3 -->
+  <g>
+    <rect x="510" y="80" width="215" height="180" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="510" y="80" width="215" height="8" rx="4" fill="#3ddc97"/>
+    <text x="532" y="135" class="t ic">🎯</text>
+    <text x="532" y="170" class="t ct">SWOT Analysis</text>
+    <text x="532" y="198" class="t cd">Your strengths, the gaps,</text>
+    <text x="532" y="216" class="t cd">and how to play them for</text>
+    <text x="532" y="234" class="t cd">this specific role.</text>
+  </g>
+  <!-- card 4 -->
+  <g>
+    <rect x="745" y="80" width="215" height="180" rx="14" fill="#ffffff" stroke="#dfe4f0" stroke-width="2"/>
+    <rect x="745" y="80" width="215" height="8" rx="4" fill="#ff8a5c"/>
+    <text x="767" y="135" class="t ic">🎓</text>
+    <text x="767" y="170" class="t ct">Study Guide</text>
+    <text x="767" y="198" class="t cd">Likely interview questions,</text>
+    <text x="767" y="216" class="t cd">talking points, and a</text>
+    <text x="767" y="234" class="t cd">48-hour prep plan.</text>
+  </g>
+
+  <rect x="40" y="284" width="920" height="40" rx="10" fill="#eaf6f9" stroke="#bfe6ee" stroke-width="2"/>
+  <text x="62" y="309" class="t foot">📁 All saved to one Google Drive folder per job, with the links dropped into your spreadsheet.</text>
+</svg>
