@@ -1,0 +1,6 @@
+# Normalize line endings — keep LF in the repo for cross-platform consistency
+* text=auto eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.svg  text eol=lf
+*.csv  text eol=lf
