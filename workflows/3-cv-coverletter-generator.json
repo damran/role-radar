@@ -42,11 +42,11 @@
             },
             {
               "name": "CV_MODEL",
-              "stringValue": "anthropic/claude-sonnet-latest"
+              "stringValue": "anthropic/claude-sonnet-4.6"
             },
             {
               "name": "CL_MODEL",
-              "stringValue": "anthropic/claude-sonnet-latest"
+              "stringValue": "anthropic/claude-sonnet-4.6"
             },
             {
               "name": "SWOT_MODEL",
@@ -1246,7 +1246,7 @@
         "width": 260,
         "color": 6
       },
-      "id": "3c853db6-7d23-4043-8034-81e3c510fe98",
+      "id": "0ddadc40-f7ba-4e16-8aea-91afbec83aff",
       "name": "RoleRadar Brand",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
