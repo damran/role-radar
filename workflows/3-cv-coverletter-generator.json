@@ -91,6 +91,14 @@
             {
               "name": "CV_TEMPLATE",
               "stringValue": "auto"
+            },
+            {
+              "name": "FILTER_RECOMMENDATION",
+              "stringValue": ""
+            },
+            {
+              "name": "FILTER_LOCATION",
+              "stringValue": ""
             }
           ]
         },
@@ -146,10 +154,10 @@
     },
     {
       "parameters": {
-        "jsCode": "const jobs = $input.all();\n\nconst validJobs = jobs.filter(item => {\n  // 1. Better Recommendation Check (handles multiple spaces/tabs)\n  const rec = item.json.recommendation || '';\n//  const isStrongRecommendation = /apply immediately|strong\\s+apply/i.test(rec);\n  const isStrongRecommendation = /apply immediately/i.test(rec);\n  \n  // 2. Already Processed Check\n  const hasCV = item.json.cv_link && item.json.cv_link.trim() !== '';\n  const isDone = (item.json.status || '').toLowerCase() === 'docs generated';\n  const alreadyProcessed = hasCV || isDone;\n\n  // 3. Location Check\n  const location = (item.json.location || '').toLowerCase();\n  const isBerlin = location.includes('berlin');\n  \n  // Combine all three\n  return !alreadyProcessed;\n});\n\nif (validJobs.length === 0) {\n  return [{ json: { message: 'No unprocessed jobs found', count: 0 } }];\n}\n\nreturn validJobs;"
+        "jsCode": "// Select which shortlisted jobs get documents. Both gates are OPTIONAL and come from the\n// config node (P3: Set Job ID); leave a field blank to disable that gate:\n//   FILTER_RECOMMENDATION  e.g. \"Apply immediately\"  -> case-insensitive substring match on recommendation\n//   FILTER_LOCATION        e.g. \"Berlin\"             -> case-insensitive substring match on location\n// Jobs that already have documents (cv_link set, or status = \"docs generated\") are always skipped.\nconst jobs = $input.all();\nconst config = $('P3: Set Job ID').first().json;\nconst wantRec = String(config.FILTER_RECOMMENDATION || '').trim().toLowerCase();\nconst wantLoc = String(config.FILTER_LOCATION || '').trim().toLowerCase();\n\nconst validJobs = jobs.filter(item => {\n  const j = item.json;\n\n  const hasCV = j.cv_link && String(j.cv_link).trim() !== '';\n  const isDone = String(j.status || '').toLowerCase() === 'docs generated';\n  if (hasCV || isDone) return false;                 // already processed\n\n  if (wantRec && !String(j.recommendation || '').toLowerCase().includes(wantRec)) return false;\n  if (wantLoc && !String(j.location || '').toLowerCase().includes(wantLoc)) return false;\n\n  return true;\n});\n\nif (validJobs.length === 0) {\n  return [{ json: { message: 'No matching unprocessed jobs found', count: 0 } }];\n}\nreturn validJobs;\n"
       },
       "id": "e3d2ba2d-f305-4e2c-9b2b-cd53bd8e40d3",
-      "name": "P3: Filter Unprocessed Jobs",
+      "name": "P3: Select Jobs to Generate",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -1284,7 +1292,7 @@
       "main": [
         [
           {
-            "node": "P3: Filter Unprocessed Jobs",
+            "node": "P3: Select Jobs to Generate",
             "type": "main",
             "index": 0
           }
@@ -1457,7 +1465,7 @@
         ]
       ]
     },
-    "P3: Filter Unprocessed Jobs": {
+    "P3: Select Jobs to Generate": {
       "main": [
         [
           {

@@ -83,6 +83,12 @@ Each workflow starts with a config node. Replace the placeholders:
   and set `SCORE_THRESHOLD` (default `65`).
 - **Phase 3** – replace `FULL_CV_CONTEXT` and the `CANDIDATE_*` fields with your details, add your **`SKILLS`**
   (skillset), and pick a **`CV_TEMPLATE`** (`auto`, or `1`–`15`) — see [CVs & cover letters](CV_AND_COVER_LETTERS.md).
+- **Phase 3 (which jobs get documents)** – two optional filters in the same config node, **blank by default**
+  (so every shortlisted job is processed):
+  - `FILTER_RECOMMENDATION` – only generate for a recommendation tier, e.g. `Apply immediately` (the scale is
+    `Apply immediately` › `Strong apply` › `Worth applying` › `Stretch role` › `Skip`). Substring, case-insensitive.
+  - `FILTER_LOCATION` – only generate for jobs whose location contains this, e.g. `Berlin` or `Remote`.
+  Leave either blank to disable that gate. With both blank, `SCORE_THRESHOLD` is the only selectivity knob.
 - Confirm the model slugs (`SCORING_MODEL`, `CV_MODEL`, …) against
   [MODELS_AND_COST.md](MODELS_AND_COST.md) and <https://openrouter.ai/models>.
 - **Phase 2** – set the [language gate](#-language-gate) (`LANGUAGE_GATE`, `EXCLUDE_LANGUAGES`). Default is English-only.

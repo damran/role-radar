@@ -147,6 +147,7 @@ Everything you tune lives in the first **config box** of each workflow — no co
 | **`SCORE_THRESHOLD`** | How good a match has to be to get documents (default 65) |
 | **`LANGUAGE_GATE`** | Skip jobs requiring a language you don't speak (English-only by default) |
 | **`CV_TEMPLATE`** | Which of 15 ATS CV layouts (or `auto`) — see [CVs & cover letters](docs/CV_AND_COVER_LETTERS.md) |
+| **`FILTER_RECOMMENDATION` / `FILTER_LOCATION`** | Optional: only generate docs for e.g. `Apply immediately` jobs, or jobs in `Berlin` (blank = all shortlisted) |
 | **Models** | Swap the AI models in one place — see [models & cost](docs/LLM_GUIDE.md) |
 
 ## 📚 Documentation
