@@ -75,6 +75,10 @@ n8n shows "credential not found").
 
 ## 5. Configure the `Set` / config node in each workflow
 
+> ⚡ **Shortcut (optional):** instead of editing each node by hand, run the **[`setup.ps1` / `setup.sh`](PROFILE.md)**
+> wizard. It asks for everything below once, writes a `profile.json`, and produces personalized, ready-to-import
+> workflows in `configured/`. Python 3 required. The manual steps below are the no-code alternative.
+
 Each workflow starts with a config node. Replace the placeholders:
 
 - `GOOGLE_SHEET_ID` → your Sheet ID
@@ -83,6 +87,10 @@ Each workflow starts with a config node. Replace the placeholders:
   and set `SCORE_THRESHOLD` (default `65`).
 - **Phase 3** – replace `FULL_CV_CONTEXT` and the `CANDIDATE_*` fields with your details, add your **`SKILLS`**
   (skillset), and pick a **`CV_TEMPLATE`** (`auto`, or `1`–`15`) — see [CVs & cover letters](CV_AND_COVER_LETTERS.md).
+  - **Contact fields:** `CANDIDATE_NAME`, `CANDIDATE_EMAIL`, `CANDIDATE_PHONE`, `CANDIDATE_LINKEDIN`,
+    `CANDIDATE_GITHUB` and `CANDIDATE_LOCATION`. `CANDIDATE_GITHUB` is optional — set it to your profile URL
+    (e.g. `github.com/your-handle`) and it's added to the CV header and the cover-letter contact line; leave it
+    blank to omit it entirely.
 - **Phase 3 (which jobs get documents)** – two optional filters in the same config node, **blank by default**
   (so every shortlisted job is processed):
   - `FILTER_RECOMMENDATION` – only generate for a recommendation tier, e.g. `Apply immediately` (the scale is

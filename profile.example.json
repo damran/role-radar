@@ -1,0 +1,37 @@
+{
+  "candidate": {
+    "name": "Jordan Avery",
+    "email": "jordan.avery@example.com",
+    "phone": "+31 6 1234 5678",
+    "location": "Amsterdam, Netherlands",
+    "linkedin": "linkedin.com/in/jordan-avery/",
+    "github": "github.com/jordan-avery"
+  },
+  "candidate_profile": "Name: Jordan Avery\nCurrent Title: Senior Product Marketing Manager\nLocation: Amsterdam, Netherlands\nLanguages: English (Native), Dutch (Intermediate B1)\nExperience: 9+ years in B2B SaaS product marketing and go-to-market\n\n[EXECUTIVE SUMMARY]\nProduct marketing leader with 9+ years taking B2B SaaS products to market across Europe. Owns positioning, launch strategy, and lifecycle marketing, working hand in hand with product, sales, and demand generation. Comfortable turning a dense feature list into a story buyers understand, and just as comfortable in the analytics behind a funnel.\n\n[CORE COMPETENCIES]\n- Go-to-Market: Product positioning, messaging frameworks, launch planning, competitive intelligence, pricing and packaging input\n- Lifecycle & Demand: Email lifecycle, onboarding flows, nurture campaigns, webinars, content strategy\n- Sales Enablement: Battlecards, pitch decks, demo narratives, win/loss analysis\n- Tools: HubSpot, Marketo, Salesforce, Figma, Webflow, Google Analytics 4, Amplitude, Notion\n- Content & SEO: Long-form content, case studies, SEO and SEM fundamentals, copywriting\n- Analytics: Funnel analysis, A/B testing, attribution basics, basic SQL\n\n[PROFESSIONAL EXPERIENCE]\n1. Tideway Software | Amsterdam, Netherlands | Senior Product Marketing Manager (2021 - Present)\n- Led go-to-market for three product launches, coordinating product, sales, and demand-generation teams\n- Rebuilt the messaging and positioning framework now used across the website, sales decks, and onboarding\n- Launched a lifecycle email program that improved trial-to-paid activation\n- Created a sales enablement library (battlecards, demo scripts) adopted by sales across every region\n- Ran quarterly win/loss interviews and fed the insights back into roadmap and positioning\n\n2. Larkfield Digital | Rotterdam, Netherlands | Product Marketing Manager (2016 - 2021)\n- Owned positioning and launch for a B2B analytics product from beta to general availability\n- Built the customer reference and case-study program from scratch\n- Partnered with demand generation on webinars and nurture tracks that grew qualified pipeline\n- Wrote long-form content and SEO landing pages that grew organic traffic\n\n[CERTIFICATIONS & EDUCATION]\n- B.A. Communications & Media, University of Amsterdam\n- HubSpot Inbound Marketing Certification\n- Google Analytics (GA4) Certification\n- Pragmatic Institute - Product Marketing Certified (PMC-III)",
+  "full_cv": "Name: Jordan Avery\nCurrent Title: Senior Product Marketing Manager\nLocation: Amsterdam, Netherlands\nLanguages: English (Native), Dutch (B1)\nExperience: 9+ years in B2B SaaS product marketing and go-to-market\n\n[EXECUTIVE SUMMARY]\nProduct marketing leader with 9+ years taking B2B SaaS products to market across Europe. Owns positioning, launch strategy, and lifecycle marketing, partnering closely with product, sales, and demand generation. Strong at turning technical capabilities into clear buyer-facing stories and at reading the analytics behind the funnel.\n\n[CORE COMPETENCIES]\n- Go-to-Market: Product positioning, messaging frameworks, launch planning, competitive intelligence, pricing and packaging input\n- Lifecycle & Demand: Email lifecycle, onboarding flows, nurture campaigns, webinars, content strategy\n- Sales Enablement: Battlecards, pitch decks, demo narratives, win/loss analysis\n- Tools: HubSpot, Marketo, Salesforce, Figma, Webflow, Google Analytics 4, Amplitude, Notion\n- Content & SEO: Long-form content, case studies, SEO and SEM fundamentals, copywriting\n- Analytics: Funnel analysis, A/B testing, attribution basics, basic SQL\n\n[PROFESSIONAL EXPERIENCE]\n1. Tideway Software | Amsterdam | Senior Product Marketing Manager (2021 - Present)\n- Led go-to-market for three product launches, coordinating product, sales, and demand-generation teams\n- Rebuilt the messaging and positioning framework now used across the website, sales decks, and onboarding\n- Launched a lifecycle email program that improved trial-to-paid activation\n- Created a sales enablement library (battlecards, demo scripts) adopted by sales across every region\n- Ran quarterly win/loss interviews and fed the insights back into roadmap and positioning\n\n2. Larkfield Digital | Rotterdam | Product Marketing Manager (2016 - 2021)\n- Owned positioning and launch for a B2B analytics product from beta to general availability\n- Built the customer reference and case-study program from scratch\n- Partnered with demand generation on webinars and nurture tracks that grew qualified pipeline\n- Wrote long-form content and SEO landing pages that grew organic traffic\n\n[CERTIFICATIONS]\n- HubSpot Inbound Marketing Certification\n- Google Analytics (GA4) Certification\n- Pragmatic Institute - Product Marketing Certified (PMC-III)\n\n[EDUCATION]\nB.A. Communications & Media, University of Amsterdam",
+  "skills": "Go-to-Market: Product positioning, messaging frameworks, launch planning, competitive intelligence, pricing and packaging input\nLifecycle & Demand: Email lifecycle, onboarding flows, nurture campaigns, webinars, content strategy\nSales Enablement: Battlecards, pitch decks, demo narratives, win/loss analysis\nTools: HubSpot, Marketo, Salesforce, Figma, Webflow, Google Analytics 4, Amplitude, Notion\nContent & SEO: Long-form content, case studies, SEO and SEM fundamentals, copywriting\nAnalytics: Funnel analysis, A/B testing, attribution basics, basic SQL\nCertifications: HubSpot Inbound Marketing, Google Analytics (GA4), Pragmatic Institute PMC-III\nSoft skills: cross-team collaboration, storytelling, stakeholder management, clear writing",
+  "scoring": {
+    "score_threshold": 65,
+    "cv_template": "auto",
+    "language_gate": "english_only",
+    "exclude_languages": "German",
+    "filter_recommendation": "",
+    "filter_location": ""
+  },
+  "models": {
+    "scoring": "deepseek/deepseek-v4-flash",
+    "cv": "anthropic/claude-sonnet-4.6",
+    "cl": "anthropic/claude-sonnet-4.6",
+    "swot": "deepseek/deepseek-v4-flash",
+    "study": "deepseek/deepseek-v4-flash"
+  },
+  "resources": {
+    "google_sheet_id": "YOUR_GOOGLE_SHEET_ID",
+    "drive_root_folder_id": "YOUR_DRIVE_ROOT_FOLDER_ID",
+    "applications_folder_id": "YOUR_APPLICATIONS_FOLDER_ID",
+    "archive_folder_id": "YOUR_ARCHIVE_FOLDER_ID"
+  },
+  "credentials": {
+    "openrouter_cred_id": ""
+  }
+}

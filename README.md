@@ -114,6 +114,10 @@ Then:
 📖 **First time? Start with the [⚡ Quick Start](docs/QUICKSTART.md)** (fastest path, ~30 min) — or the full
 [step-by-step setup guide](docs/SETUP.md), which explains every term as it comes up, no background assumed.
 
+> 💻 **Comfortable with a terminal?** Run the **[`setup.ps1` (Windows) / `setup.sh` (macOS/Linux)](docs/PROFILE.md)**
+> wizard to enter your details, links and keys once — it writes your `profile.json` and generates ready-to-import,
+> personalized workflows for you. Python 3 required.
+
 ## ✨ Why RoleRadar (not just another template)
 
 Most "automate your job search" templates stop at *search → spreadsheet → one generic cover letter*. RoleRadar
@@ -142,7 +146,7 @@ Everything you tune lives in the first **config box** of each workflow — no co
 
 | Setting | What it controls |
 |---------|------------------|
-| Your **profile + skills** | Who the CVs and cover letters are written for (swap out the sample) |
+| Your **profile + skills + links** | Who the CVs and cover letters are written for, incl. your contact links (LinkedIn, **GitHub**) — swap out the sample |
 | **Searches** (`Filter` tab) | Which jobs to look for — one row per search |
 | **`SCORE_THRESHOLD`** | How good a match has to be to get documents (default 65) |
 | **`LANGUAGE_GATE`** | Skip jobs requiring a language you don't speak (English-only by default) |
@@ -156,6 +160,7 @@ Everything you tune lives in the first **config box** of each workflow — no co
 |-------|-----|
 | **[⚡ Quick Start](docs/QUICKSTART.md)** | The fastest path to your first tailored CV (~30 min) |
 | **[Setup guide](docs/SETUP.md)** | The detailed walk-through, every term explained |
+| **[Profile & setup wizard](docs/PROFILE.md)** | One-file `profile.json` + the `setup.ps1`/`setup.sh` wizard |
 | **[Self-hosting with Docker](docs/SELF_HOSTING.md)** | Run n8n free on your own machine (private, no Cloud) |
 | **[Credentials & Google access](docs/CREDENTIALS.md)** | Connecting Google (Cloud vs self-hosted) + OpenRouter |
 | **[Skills, CVs & cover letters](docs/CV_AND_COVER_LETTERS.md)** | How tailoring works + the 15 ATS templates |

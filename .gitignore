@@ -11,6 +11,11 @@ private/
 *.local.json
 *.private.json
 
+# Your filled-in profile + the personalized workflows the setup wizard generates.
+# profile.example.json (the fictional template) IS committed; your real profile.json is not.
+profile.json
+/configured/
+
 # n8n / local runtime
 .n8n/
 node_modules/
